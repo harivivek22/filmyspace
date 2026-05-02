@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Filmy Space — Telugu Cinema Games</title>
+<meta name="description" content="The home of Telugu cinema games. Collect cards, solve daily puzzles, build your profile."/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;700;900&family=Tiro+Telugu&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --gold:#FFE600;--gold2:#D4960A;--gold-dim:rgba(255,200,80,.55);
+  --dark:#1a0a00;--panel:#1e1208;--red:#cc1111;
+  --border:rgba(212,150,10,.28);
+}
+body{font-family:'Barlow Condensed',sans-serif;background:var(--dark);min-height:100vh;color:var(--gold);overflow-x:hidden;}
+.strip{position:fixed;top:0;bottom:0;width:10px;background:repeating-linear-gradient(0deg,#cc0000 0,#cc0000 20px,#8b0000 20px,#8b0000 40px);z-index:100;}
+.strip-l{left:0;}.strip-r{right:0;}
+.page{max-width:560px;margin:0 auto;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding-bottom:60px;}
+
+/* Banner */
+.banner{width:100%;background:var(--red);border-bottom:5px solid #8b0000;border-top:3px solid #ff6b35;padding:14px 0 10px;text-align:center;position:relative;overflow:hidden;}
+.banner::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(255,255,255,.04) 8px,rgba(255,255,255,.04) 16px);}
+.banner-title{font-family:'Bebas Neue',cursive;font-size:40px;color:var(--gold);letter-spacing:5px;text-shadow:3px 3px 0 #8b0000,-1px -1px 0 #ff6b35;position:relative;z-index:1;}
+.banner-sub{font-size:12px;color:rgba(255,230,100,.7);letter-spacing:4px;font-weight:700;position:relative;z-index:1;margin-top:3px;}
+
+/* Filmstrip */
+.filmstrip{width:100%;height:30px;background:#111;display:flex;align-items:center;overflow:hidden;border-top:2px solid #333;border-bottom:2px solid #333;}
+.filmstrip-track{display:flex;animation:filmroll 10s linear infinite;white-space:nowrap;}
+.fhole{display:inline-flex;flex-direction:column;align-items:center;justify-content:space-between;height:30px;padding:3px 5px;gap:4px;}
+.fhole span{display:block;width:12px;height:8px;background:#fff;border-radius:2px;opacity:.8;}
+.fhole-content{display:inline-block;width:44px;height:30px;background:#222;font-size:15px;line-height:30px;text-align:center;}
+@keyframes filmroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* Hero */
+.hero{width:100%;padding:28px 20px 20px;text-align:center;}
+.hero-title{font-family:'Bebas Neue',cursive;font-size:22px;color:var(--gold);letter-spacing:3px;margin-bottom:8px;}
+.hero-sub{font-size:14px;color:var(--gold-dim);letter-spacing:1px;line-height:1.6;}
+
+/* Quick stats bar */
+.quick-stats{
+  display:flex;width:100%;padding:0 20px;gap:10px;margin-bottom:24px;
+}
+.qs{
+  flex:1;background:rgba(0,0,0,.4);border:1.5px solid var(--border);
+  border-radius:8px;padding:10px 8px;text-align:center;
+}
+.qs-num{font-family:'Bebas Neue',cursive;font-size:24px;color:var(--gold);line-height:1;}
+.qs-lbl{font-size:9px;color:var(--gold-dim);letter-spacing:2px;font-weight:700;margin-top:2px;text-transform:uppercase;}
+
+/* Game cards */
+.games{width:100%;padding:0 20px;display:flex;flex-direction:column;gap:14px;margin-bottom:24px;}
+
+.game-card{
+  width:100%;background:var(--panel);
+  border:1.5px solid var(--border);border-radius:10px;
+  overflow:hidden;text-decoration:none;
+  display:block;transition:transform .18s,border-color .18s;
+}
+.game-card:hover{transform:translateY(-3px);border-color:rgba(212,150,10,.6);}
+
+.gc-top{padding:18px 18px 14px;display:flex;align-items:center;gap:14px;}
+.gc-icon{width:56px;height:56px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;border:2px solid var(--border);}
+.gc-info{flex:1;}
+.gc-title{font-family:'Bebas Neue',cursive;font-size:22px;color:var(--gold);letter-spacing:2px;line-height:1;}
+.gc-subtitle{font-size:12px;color:var(--gold-dim);letter-spacing:1px;margin-top:3px;}
+.gc-arrow{font-family:'Bebas Neue',cursive;font-size:22px;color:rgba(212,150,10,.4);}
+.gc-desc{font-size:13px;color:rgba(255,200,80,.6);padding:0 18px 14px;line-height:1.6;letter-spacing:.5px;}
+.gc-tags{display:flex;gap:6px;padding:0 18px 16px;flex-wrap:wrap;}
+.gc-tag{font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:12px;border:1px solid var(--border);color:var(--gold-dim);}
+.gc-footer{
+  background:rgba(0,0,0,.3);border-top:1px solid var(--border);
+  padding:10px 18px;display:flex;justify-content:space-between;align-items:center;
+}
+.gc-stat{font-size:11px;color:var(--gold-dim);letter-spacing:1px;font-weight:700;}
+.gc-stat span{color:var(--gold);font-family:'Bebas Neue',cursive;font-size:16px;margin-right:4px;}
+.gc-live{font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:10px;background:rgba(30,200,80,.15);border:1px solid rgba(30,200,80,.3);color:#88dd88;}
+
+/* Profile CTA */
+.profile-cta{
+  width:100%;padding:0 20px;margin-bottom:24px;
+}
+.profile-box{
+  background:rgba(0,0,0,.4);border:1.5px solid var(--border);
+  border-radius:10px;padding:20px;text-align:center;
+}
+.profile-box-title{font-family:'Bebas Neue',cursive;font-size:22px;color:var(--gold);letter-spacing:3px;margin-bottom:6px;}
+.profile-box-sub{font-size:13px;color:var(--gold-dim);letter-spacing:.5px;margin-bottom:16px;line-height:1.6;}
+.profile-btn{
+  display:inline-block;background:var(--gold);color:var(--dark);
+  font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:3px;
+  padding:11px 32px;border-radius:4px;text-decoration:none;
+  box-shadow:4px 4px 0 rgba(0,0,0,.3);transition:background .15s,transform .1s;
+  border:none;cursor:pointer;
+}
+.profile-btn:hover{background:#fff176;transform:translateY(-2px);}
+
+/* Footer */
+.hub-footer{
+  width:100%;padding:16px 20px;text-align:center;
+  border-top:1px solid var(--border);margin-top:8px;
+}
+.hub-footer-text{font-size:11px;color:rgba(255,200,80,.3);letter-spacing:2px;font-weight:700;}
+</style>
+</head>
+<body>
+<div class="strip strip-l"></div>
+<div class="strip strip-r"></div>
+
+<div class="page">
+  <div class="banner" style="width:100%">
+    <div class="banner-title">FILMY SPACE</div>
+    <div class="banner-sub">TELUGU CINEMA GAMES & COLLECTIBLES</div>
+  </div>
+
+  <div class="filmstrip" style="width:100%">
+    <div class="filmstrip-track" id="fs1"></div>
+    <div class="filmstrip-track" id="fs2"></div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-title">YOUR TELUGU CINEMA UNIVERSE</div>
+    <div class="hero-sub">Collect cards. Solve daily puzzles. Build your profile. Challenge friends.</div>
+  </div>
+
+  <div class="quick-stats">
+    <div class="qs">
+      <div class="qs-num" id="qs-cards">0</div>
+      <div class="qs-lbl">Cards</div>
+    </div>
+    <div class="qs">
+      <div class="qs-num" id="qs-streak">0</div>
+      <div class="qs-lbl">Streak</div>
+    </div>
+    <div class="qs">
+      <div class="qs-num" id="qs-puzzles">0</div>
+      <div class="qs-lbl">Puzzles</div>
+    </div>
+    <div class="qs">
+      <div class="qs-num" id="qs-pulls">0</div>
+      <div class="qs-lbl">Pulls</div>
+    </div>
+  </div>
+
+  <div class="games">
+
+    <!-- Tollywood Cards -->
+    <a class="game-card" href="index.html">
+      <div class="gc-top">
+        <div class="gc-icon" style="background:#3a1a00;">🃏</div>
+        <div class="gc-info">
+          <div class="gc-title">TOLLYWOOD CARDS</div>
+          <div class="gc-subtitle">GACHA · COLLECT · TRADE · EVOLVE</div>
+        </div>
+        <div class="gc-arrow">→</div>
+      </div>
+      <div class="gc-desc">Pull Telugu cinema trading cards from the HOUSEFULL machine. Collect legendary stars, build evolution chains, trade duplicates.</div>
+      <div class="gc-tags">
+        <span class="gc-tag">34 CARDS</span>
+        <span class="gc-tag">8 LEGENDARY</span>
+        <span class="gc-tag">EVOLUTION CHAINS</span>
+        <span class="gc-tag">TRADING</span>
+      </div>
+      <div class="gc-footer">
+        <div class="gc-stat"><span id="gc-collected">0</span>COLLECTED</div>
+        <div class="gc-stat"><span id="gc-pulls-stat">0</span>PULLS</div>
+        <div class="gc-live">PLAY NOW</div>
+      </div>
+    </a>
+
+    <!-- సినిమా క్రమం -->
+    <a class="game-card" href="game/index.html">
+      <div class="gc-top">
+        <div class="gc-icon" style="background:#001a30;">🎬</div>
+        <div class="gc-info">
+          <div class="gc-title" style="font-family:'Tiro Telugu',serif;font-size:20px;">సినిమా క్రమం</div>
+          <div class="gc-subtitle">DAILY TIMELINE PUZZLE</div>
+        </div>
+        <div class="gc-arrow">→</div>
+      </div>
+      <div class="gc-desc">Arrange 3 Telugu movies in chronological order. One new puzzle every day. Beat your friends' times on the leaderboard.</div>
+      <div class="gc-tags">
+        <span class="gc-tag">DAILY PUZZLE</span>
+        <span class="gc-tag">TIMER</span>
+        <span class="gc-tag">LEADERBOARD</span>
+        <span class="gc-tag">STREAK</span>
+      </div>
+      <div class="gc-footer">
+        <div class="gc-stat"><span id="gc-streak">0</span>DAY STREAK</div>
+        <div class="gc-stat"><span id="gc-winrate">0%</span>WIN RATE</div>
+        <div class="gc-live" id="todayBadge">PLAY TODAY'S</div>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="profile-cta">
+    <div class="profile-box">
+      <div class="profile-box-title">YOUR PROFILE</div>
+      <div class="profile-box-sub">See your full stats, card collection showcase, and where you rank against friends.</div>
+      <a class="profile-btn" href="profile.html">VIEW MY PROFILE</a>
+    </div>
+  </div>
+
+  <div class="hub-footer">
+    <div class="hub-footer-text">FILMY SPACE · TELUGU CINEMA · MADE WITH ❤️</div>
+  </div>
+</div>
+
+<script>
+function load(k){try{return JSON.parse(localStorage.getItem(k));}catch(e){return null;}}
+
+const collection  = load('tollywood_collection') || {};
+const pullCount   = load('tollywood_pulls') || 0;
+const gameHistory = load('cinemaa_history') || [];
+const gameStreak  = load('cinemaa_streak') || 0;
+
+const ownedCount = Object.values(collection).filter(v=>v>0).length;
+const wins = gameHistory.filter(r=>r.correct);
+const winPct = gameHistory.length ? Math.round(wins.length/gameHistory.length*100) : 0;
+
+document.getElementById('qs-cards').textContent   = ownedCount;
+document.getElementById('qs-streak').textContent  = gameStreak;
+document.getElementById('qs-puzzles').textContent = gameHistory.length;
+document.getElementById('qs-pulls').textContent   = pullCount;
+
+document.getElementById('gc-collected').textContent  = ownedCount;
+document.getElementById('gc-pulls-stat').textContent = pullCount;
+document.getElementById('gc-streak').textContent     = gameStreak;
+document.getElementById('gc-winrate').textContent    = winPct+'%';
+
+const TODAY = Math.floor(Date.now()/86400000);
+const playedToday = gameHistory.some(r=>r.date===TODAY);
+if(playedToday) document.getElementById('todayBadge').textContent = '✓ PLAYED TODAY';
+
+const emojis = ['🔥','🦅','🐯','💎','🌙','🎪','🏆','🌪️','⚡','🌊','🎯','🌺','🦋','🌸','💫','🌟'];
+const fs = Array.from({length:2},()=>emojis.map(e=>`<div class="fhole"><span></span><span></span></div><div class="fhole-content">${e}</div>`).join(''));
+document.getElementById('fs1').innerHTML = fs[0];
+document.getElementById('fs2').innerHTML = fs[1];
+</script>
+</body>
+</html>
