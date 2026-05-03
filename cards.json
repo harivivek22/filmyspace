@@ -1,0 +1,44 @@
+[
+  { "id": 1,  "pic": "🔥", "name": "Chiranjeevi",              "role": "Rising Star",        "rarity": "common",    "bg": "#5a1010", "levelOf": "chiranjeevi", "level": 1, "levelsTo": 2 },
+  { "id": 2,  "pic": "🔥", "name": "Chiranjeevi",              "role": "Action King",        "rarity": "common",    "bg": "#7b1a1a", "levelOf": "chiranjeevi", "level": 2, "levelsFrom": 1, "levelsTo": 3 },
+  { "id": 3,  "pic": "🔥", "name": "Chiranjeevi",              "role": "Megastar",           "rarity": "legendary", "bg": "#9b0000", "levelOf": "chiranjeevi", "level": 3, "levelsFrom": 2 },
+
+  { "id": 4,  "pic": "🦅", "name": "Jr NTR",                  "role": "Student No.1",       "rarity": "common",    "bg": "#10205a", "levelOf": "jrntr", "level": 1, "levelsTo": 5 },
+  { "id": 5,  "pic": "🦅", "name": "Jr NTR",                  "role": "Young Tiger",        "rarity": "legendary", "bg": "#1a3a7b", "levelOf": "jrntr", "level": 2, "levelsFrom": 4 },
+
+  { "id": 6,  "pic": "🐯", "name": "Allu Arjun",               "role": "Stylish Star",       "rarity": "common",    "bg": "#2a1050", "levelOf": "alluarjun", "level": 1, "levelsTo": 7 },
+  { "id": 7,  "pic": "🐯", "name": "Allu Arjun",               "role": "Icon Star",          "rarity": "legendary", "bg": "#4a1a7b", "levelOf": "alluarjun", "level": 2, "levelsFrom": 6 },
+
+  { "id": 8,  "pic": "💎", "name": "Mahesh Babu",              "role": "Prince Charming",    "rarity": "common",    "bg": "#103040", "levelOf": "mahesh", "level": 1, "levelsTo": 9 },
+  { "id": 9,  "pic": "💎", "name": "Mahesh Babu",              "role": "Prince",             "rarity": "legendary", "bg": "#1a5a7b", "levelOf": "mahesh", "level": 2, "levelsFrom": 8 },
+
+  { "id": 10, "pic": "🌙", "name": "Pawan Kalyan",             "role": "Fresh Face",         "rarity": "common",    "bg": "#103020", "levelOf": "pawan", "level": 1, "levelsTo": 11 },
+  { "id": 11, "pic": "🌙", "name": "Pawan Kalyan",             "role": "Power Star",         "rarity": "legendary", "bg": "#1a7b4a", "levelOf": "pawan", "level": 2, "levelsFrom": 10 },
+
+  { "id": 12, "pic": "🎪", "name": "Ram Charan",               "role": "Mega Son",           "rarity": "common",    "bg": "#402010", "levelOf": "ramcharan", "level": 1, "levelsTo": 13 },
+  { "id": 13, "pic": "🎪", "name": "Ram Charan",               "role": "Mega Power Star",    "rarity": "legendary", "bg": "#7b4a1a", "levelOf": "ramcharan", "level": 2, "levelsFrom": 12 },
+
+  { "id": 14, "pic": "🏆", "name": "Rajamouli",                "role": "Budding Director",   "rarity": "common",    "bg": "#301030", "levelOf": "rajamouli", "level": 1, "levelsTo": 15 },
+  { "id": 15, "pic": "🏆", "name": "Rajamouli",                "role": "Director King",      "rarity": "legendary", "bg": "#5a1a5a", "levelOf": "rajamouli", "level": 2, "levelsFrom": 14 },
+
+  { "id": 16, "pic": "🌪️","name": "Pushpa",                   "role": "The Rise",           "rarity": "common",    "bg": "#3a1a00", "levelOf": "pushpa", "level": 1, "levelsTo": 17 },
+  { "id": 17, "pic": "🌪️","name": "Pushpa",                   "role": "The Rule",           "rarity": "legendary", "bg": "#6b2a0a", "levelOf": "pushpa", "level": 2, "levelsFrom": 16 },
+
+  { "id": 18, "pic": "⚡", "name": "Balakrishna",              "role": "NBK",                "rarity": "common",    "bg": "#2a3a2a" },
+  { "id": 19, "pic": "🌊", "name": "Venkatesh",               "role": "Victory",            "rarity": "common",    "bg": "#1a2a4a" },
+  { "id": 20, "pic": "🎯", "name": "Nagarjuna",               "role": "King",               "rarity": "common",    "bg": "#2a2a1a" },
+  { "id": 21, "pic": "🌺", "name": "Samantha",                "role": "Sam Bam",            "rarity": "common",    "bg": "#3a1a2a" },
+  { "id": 22, "pic": "🦋", "name": "Anushka Shetty",          "role": "Size Zero",          "rarity": "common",    "bg": "#1a3a2a" },
+  { "id": 23, "pic": "🌸", "name": "Kajal Aggarwal",          "role": "Leading Lady",       "rarity": "common",    "bg": "#3a2a1a" },
+  { "id": 24, "pic": "💫", "name": "Rashmika",                "role": "National Crush",     "rarity": "common",    "bg": "#2a1a3a" },
+  { "id": 25, "pic": "🌟", "name": "Vijay Deverakonda",       "role": "Arjun Reddy Star",   "rarity": "common",    "bg": "#1a2a2a" },
+  { "id": 26, "pic": "🌊", "name": "Nani",                    "role": "Natural Star",       "rarity": "common",    "bg": "#1a3a3a" },
+  { "id": 27, "pic": "🎵", "name": "MM Keeravaani",           "role": "Music Legend",       "rarity": "common",    "bg": "#2a2a3a" },
+  { "id": 28, "pic": "🎶", "name": "DSP",                     "role": "Rockstar",           "rarity": "common",    "bg": "#3a1a1a" },
+  { "id": 29, "pic": "🌼", "name": "Tamannaah",               "role": "Tammu",              "rarity": "common",    "bg": "#2a3a1a" },
+  { "id": 30, "pic": "🎭", "name": "Trivikram",               "role": "Dialogue Maestro",   "rarity": "common",    "bg": "#1a2a3a" },
+  { "id": 31, "pic": "🔮", "name": "Sukumar",                 "role": "Visionary Director", "rarity": "common",    "bg": "#2a1a2a" },
+  { "id": 32, "pic": "🌺", "name": "Pooja Hegde",             "role": "Leading Lady",       "rarity": "common",    "bg": "#3a2a2a" },
+  { "id": 33, "pic": "🧲", "name": "Akhil Akkineni",          "role": "Star Kid",           "rarity": "common",    "bg": "#2a2a2a" },
+  { "id": 34, "pic": "🌙", "name": "Adivi Sesh",              "role": "Major Star",         "rarity": "common",    "bg": "#2a3a3a" }
+]

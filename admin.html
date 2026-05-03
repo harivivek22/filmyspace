@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card Editor — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--gold:#FFE600;--gold2:#D4960A;--dark:#1a0a00;--red:#cc1111;--panel:#1e1208;--border:rgba(212,150,10,.3);--text:#FFE600;--muted:rgba(255,200,80,.55);}
+body{font-family:'Barlow Condensed',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;}
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0d0500;}
+.login-box{background:var(--panel);border:2px solid var(--gold2);border-radius:8px;padding:40px 36px;width:340px;text-align:center;box-shadow:0 0 40px rgba(212,150,10,.15);}
+.login-box h1{font-family:'Bebas Neue',cursive;font-size:28px;color:var(--gold);letter-spacing:3px;margin-bottom:6px;}
+.login-box p{color:var(--muted);font-size:13px;margin-bottom:28px;letter-spacing:1px;}
+.login-box input[type=password]{width:100%;background:#0d0500;border:1.5px solid var(--gold2);color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:18px;padding:10px 14px;border-radius:4px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:14px;}
+.login-box input[type=password]:focus{border-color:var(--gold);}
+.login-btn{width:100%;background:var(--gold);color:var(--dark);border:none;font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:3px;padding:11px;cursor:pointer;border-radius:4px;transition:background .15s;}
+.login-btn:hover{background:#fff176;}
+.login-error{color:var(--red);font-size:13px;margin-top:10px;font-weight:700;letter-spacing:1px;display:none;}
+#admin-app{display:none;}
+header{background:#0d0500;border-bottom:3px solid var(--gold2);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;}
+.header-title{font-family:'Bebas Neue',cursive;font-size:24px;color:var(--gold);letter-spacing:3px;}
+.header-sub{font-size:12px;color:var(--muted);letter-spacing:2px;margin-top:2px;}
+.logout-btn{background:transparent;border:1.5px solid rgba(255,200,80,.4);color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;padding:6px 16px;border-radius:20px;cursor:pointer;letter-spacing:1px;transition:all .18s;}
+.logout-btn:hover{border-color:var(--gold);color:var(--gold);}
+.app-body{max-width:1100px;margin:0 auto;padding:28px 24px;display:grid;grid-template-columns:1fr 380px;gap:28px;}
+@media(max-width:780px){.app-body{grid-template-columns:1fr;}}
+.panel{background:var(--panel);border:1.5px solid var(--border);border-radius:8px;padding:24px;}
+.panel-title{font-family:'Bebas Neue',cursive;font-size:20px;color:var(--gold);letter-spacing:3px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.panel-title span{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted);letter-spacing:1px;font-weight:700;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-group.full{grid-column:1/-1;}
+label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+input[type=text],select{background:#0d0500;border:1.5px solid var(--border);color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:16px;padding:9px 12px;border-radius:4px;outline:none;transition:border-color .18s;width:100%;}
+input[type=text]:focus,select:focus{border-color:var(--gold);}
+select option{background:#1a0a00;}
+.color-row{display:flex;align-items:center;gap:10px;}
+input[type=color]{width:44px;height:38px;border:1.5px solid var(--border);border-radius:4px;background:none;cursor:pointer;padding:2px;}
+.color-presets{display:flex;gap:6px;flex-wrap:wrap;}
+.color-preset{width:24px;height:24px;border-radius:4px;cursor:pointer;border:1.5px solid rgba(255,255,255,.2);transition:transform .12s;}
+.color-preset:hover{transform:scale(1.2);border-color:#fff;}
+.preview-card{width:100px;height:140px;border-radius:8px;border:2px solid rgba(255,255,255,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 20px;position:relative;overflow:hidden;box-shadow:3px 4px 12px rgba(0,0,0,.5);}
+.preview-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,transparent 60%);}
+.preview-card .p-emoji{font-size:36px;}
+.preview-card .p-name{font-size:10px;font-weight:900;text-align:center;padding:0 6px;color:rgba(255,255,255,.95);text-shadow:0 1px 3px rgba(0,0,0,.6);margin-top:6px;line-height:1.2;}
+.preview-card .p-role{font-size:9px;color:rgba(255,255,255,.7);text-align:center;margin-top:3px;padding:0 6px;line-height:1.2;}
+.preview-card .p-rarity{position:absolute;bottom:6px;font-size:8px;font-weight:900;letter-spacing:1px;background:rgba(0,0,0,.55);color:#fff;padding:2px 6px;border-radius:3px;}
+.preview-card .p-evo{position:absolute;top:5px;left:5px;font-size:8px;font-weight:900;background:rgba(0,150,255,.5);color:#fff;padding:1px 5px;border-radius:3px;letter-spacing:.5px;}
+.legendary-shimmer{position:relative;overflow:hidden;}
+.legendary-shimmer::before{content:'';position:absolute;top:-50%;left:-60%;width:40%;height:200%;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.3) 50%,transparent 60%);animation:shimmer 2.2s ease-in-out infinite;z-index:3;pointer-events:none;}
+@keyframes shimmer{0%{left:-60%;}100%{left:120%;}}
+.add-btn{width:100%;background:var(--gold);color:var(--dark);border:none;font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:3px;padding:12px;cursor:pointer;border-radius:4px;transition:background .15s,transform .1s;margin-top:6px;}
+.add-btn:hover{background:#fff176;transform:translateY(-1px);}
+.update-btn{background:#1565C0;color:#fff;}
+.update-btn:hover{background:#1976D2;}
+.cancel-btn{width:100%;background:transparent;border:1.5px solid rgba(255,200,80,.3);color:var(--muted);font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:2px;padding:9px;cursor:pointer;border-radius:4px;margin-top:8px;transition:all .18s;display:none;}
+.cancel-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* CHAIN BUILDER */
+.chain-section{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:14px;}
+.chain-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:2px;margin-bottom:10px;}
+.chain-row{display:flex;align-items:center;gap:8px;}
+.chain-arrow{color:var(--muted);font-size:18px;flex-shrink:0;}
+.chain-card-mini{width:44px;height:62px;border-radius:4px;border:1.5px solid rgba(255,255,255,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;position:relative;overflow:hidden;}
+.chain-card-mini::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 60%);}
+.chain-card-mini .cm-name{font-size:6px;font-weight:900;color:rgba(255,255,255,.9);text-align:center;padding:0 2px;line-height:1.1;}
+.chain-none{font-size:12px;color:rgba(255,200,80,.3);letter-spacing:1px;}
+
+.search-bar{width:100%;background:#0d0500;border:1.5px solid var(--border);color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:15px;padding:9px 12px;border-radius:4px;outline:none;margin-bottom:14px;}
+.search-bar:focus{border-color:var(--gold);}
+.search-bar::placeholder{color:var(--muted);}
+.filter-row{display:flex;gap:6px;margin-bottom:14px;}
+.filt-btn{padding:5px 14px;border-radius:16px;border:1px solid var(--border);background:transparent;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted);transition:all .15s;letter-spacing:1px;}
+.filt-btn.active{background:var(--gold);color:var(--dark);border-color:var(--gold);}
+.card-list{display:flex;flex-direction:column;gap:8px;max-height:520px;overflow-y:auto;padding-right:4px;}
+.card-list::-webkit-scrollbar{width:4px;}
+.card-list::-webkit-scrollbar-thumb{background:var(--gold2);border-radius:2px;}
+.card-row{background:#0d0500;border:1.5px solid var(--border);border-radius:6px;padding:10px 12px;display:flex;align-items:center;gap:12px;transition:border-color .15s;}
+.card-row:hover{border-color:rgba(212,150,10,.6);}
+.card-row.editing{border-color:var(--gold);}
+.cr-thumb{width:36px;height:50px;border-radius:4px;border:1.5px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;position:relative;overflow:hidden;}
+.cr-thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 60%);}
+.cr-info{flex:1;min-width:0;}
+.cr-name{font-weight:700;font-size:14px;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cr-role{font-size:11px;color:var(--muted);}
+.cr-rarity{font-size:9px;font-weight:900;letter-spacing:1px;padding:2px 6px;border-radius:3px;margin-top:4px;display:inline-block;}
+.cr-rarity.common{background:rgba(123,138,154,.2);color:#9BB;}
+.cr-rarity.legendary{background:rgba(184,134,11,.2);color:#FFD700;}
+.cr-evo{font-size:9px;color:rgba(100,180,255,.8);margin-top:2px;letter-spacing:.5px;}
+.cr-actions{display:flex;gap:6px;}
+.cr-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:12px;font-weight:700;padding:5px 10px;border-radius:4px;cursor:pointer;letter-spacing:1px;transition:all .15s;font-family:'Barlow Condensed',sans-serif;}
+.cr-btn:hover{border-color:var(--gold);color:var(--gold);}
+.cr-btn.del{border-color:rgba(204,17,17,.4);color:rgba(204,17,17,.7);}
+.cr-btn.del:hover{border-color:var(--red);color:var(--red);}
+.empty-state{text-align:center;color:var(--muted);font-size:14px;padding:40px;letter-spacing:1px;}
+.export-panel{background:var(--panel);border:1.5px solid var(--border);border-radius:8px;padding:20px 24px;}
+.export-title{font-family:'Bebas Neue',cursive;font-size:18px;color:var(--gold);letter-spacing:3px;margin-bottom:14px;}
+.export-info{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px;}
+.export-info code{background:rgba(255,200,80,.1);padding:1px 5px;border-radius:3px;font-size:12px;color:var(--gold);}
+.export-btn{width:100%;background:var(--red);color:#fff;border:none;font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:3px;padding:11px;cursor:pointer;border-radius:4px;transition:background .15s;}
+.export-btn:hover{background:#e32020;}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--gold);color:var(--dark);padding:9px 22px;font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:2px;border:3px solid var(--gold2);z-index:999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap;box-shadow:4px 4px 0 rgba(0,0,0,.4);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.stats-chips{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.chip{background:rgba(212,150,10,.12);border:1px solid var(--border);border-radius:16px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;}
+.chip b{color:var(--gold);}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <h1>🎬 ADMIN</h1>
+    <p>TOLLYWOOD CARDS · CARD EDITOR</p>
+    <input type="password" id="pw-input" placeholder="••••••••"/>
+    <button class="login-btn" onclick="tryLogin()">ENTER</button>
+    <div class="login-error" id="login-error">WRONG PASSWORD</div>
+  </div>
+</div>
+
+<div id="admin-app">
+  <header>
+    <div>
+      <div class="header-title">🎬 CARD EDITOR</div>
+      <div class="header-sub">TOLLYWOOD CARDS · ADMIN</div>
+    </div>
+    <button class="logout-btn" onclick="logout()">LOGOUT</button>
+  </header>
+
+  <div class="app-body">
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <div class="panel">
+        <div class="panel-title">
+          <span id="form-mode-label">ADD NEW CARD</span>
+          <span id="editing-label" style="display:none;color:#4fc3f7;">EDITING</span>
+        </div>
+
+        <div class="preview-card" id="preview-card" style="background:#2a2a2a;">
+          <div class="p-evo" id="prev-evo" style="display:none">CHAIN</div>
+          <div class="p-emoji" id="prev-emoji">🎬</div>
+          <div class="p-name" id="prev-name">Card Name</div>
+          <div class="p-role" id="prev-role">Role</div>
+          <div class="p-rarity" id="prev-rarity">COMMON</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Emoji</label>
+            <input type="text" id="f-pic" placeholder="🎬" maxlength="4" oninput="updatePreview()"/>
+          </div>
+          <div class="form-group">
+            <label>Rarity</label>
+            <select id="f-rarity" onchange="updatePreview()">
+              <option value="common">Common</option>
+              <option value="legendary">Legendary</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full">
+            <label>Name</label>
+            <input type="text" id="f-name" placeholder="e.g. Chiranjeevi" oninput="updatePreview()"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full">
+            <label>Role / Subtitle</label>
+            <input type="text" id="f-role" placeholder="e.g. Megastar" oninput="updatePreview()"/>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Card Background Color</label>
+          <div class="color-row">
+            <input type="color" id="f-bg" value="#2a2a3a" oninput="updatePreview()"/>
+            <div class="color-presets" id="color-presets"></div>
+          </div>
+        </div>
+
+        <!-- EVOLUTION -->
+        <div class="chain-section">
+          <div class="chain-title">LEVEL CHAIN (OPTIONAL)</div>
+          <div class="form-row" style="margin-bottom:10px;">
+            <div class="form-group">
+              <label>Levels From</label>
+              <select id="f-levelsFrom" onchange="updateChainPreview()">
+                <option value="">None</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Levels To</label>
+              <select id="f-levelsTo" onchange="updateChainPreview()">
+                <option value="">None</option>
+              </select>
+            </div>
+          </div>
+          <div class="chain-row" id="chain-preview-row">
+            <span class="chain-none">No chain set</span>
+          </div>
+        </div>
+
+        <button class="add-btn" id="add-btn" onclick="addOrUpdateCard()">ADD CARD</button>
+        <button class="cancel-btn" id="cancel-btn" onclick="cancelEdit()">CANCEL</button>
+      </div>
+
+      <div class="export-panel">
+        <div class="export-title">📥 EXPORT cards.json</div>
+        <div class="export-info">After editing, download <code>cards.json</code> and replace it in your GitHub repo. All users get the update automatically.</div>
+        <button class="export-btn" onclick="exportJSON()">DOWNLOAD cards.json</button>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="panel" style="flex:1;">
+        <div class="panel-title">ALL CARDS <span id="card-count-label">0 cards</span></div>
+        <div class="stats-chips">
+          <div class="chip">Common: <b id="sc-common">0</b></div>
+          <div class="chip">Legendary: <b id="sc-legendary">0</b></div>
+          <div class="chip">In levels: <b id="sc-levels">0</b></div>
+        </div>
+        <input class="search-bar" id="search" placeholder="Search cards..." oninput="renderList()"/>
+        <div class="filter-row">
+          <button class="filt-btn active" onclick="setFilter('all',this)">All</button>
+          <button class="filt-btn" onclick="setFilter('common',this)">Common</button>
+          <button class="filt-btn" onclick="setFilter('legendary',this)">Legendary</button>
+          <button class="filt-btn" onclick="setFilter('levels',this)">Levels</button>
+        </div>
+        <div class="card-list" id="card-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ADMIN_PASSWORD = 'tollywood2024';
+const COLOR_PRESETS = ['#7b1a1a','#1a3a7b','#4a1a7b','#1a5a7b','#1a7b4a','#7b4a1a','#5a1a5a','#6b2a0a','#2a3a2a','#1a2a4a','#2a2a1a','#3a1a2a','#1a3a2a','#3a2a1a','#2a1a3a','#1a2a2a','#1a3a3a','#2a2a3a','#3a1a1a','#2a3a1a'];
+
+let CARDS = [];
+let editingId = null;
+let activeFilter = 'all';
+
+document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key==='Enter') tryLogin(); });
+
+function tryLogin() {
+  if (document.getElementById('pw-input').value === ADMIN_PASSWORD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-app').style.display = 'block';
+    loadCards();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+  }
+}
+function logout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('admin-app').style.display = 'none';
+  document.getElementById('pw-input').value = '';
+}
+
+function loadCards() {
+  fetch('cards.json?_=' + Date.now())
+    .then(r => r.json())
+    .then(data => { CARDS = data; init(); })
+    .catch(() => { CARDS = []; init(); toast('Could not load cards.json — starting fresh'); });
+}
+
+function init() {
+  buildColorPresets();
+  rebuildEvoSelects();
+  renderList();
+  updateStatsChips();
+  updatePreview();
+}
+
+function buildColorPresets() {
+  const wrap = document.getElementById('color-presets');
+  wrap.innerHTML = '';
+  COLOR_PRESETS.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'color-preset';
+    el.style.background = c;
+    el.onclick = () => { document.getElementById('f-bg').value = c; updatePreview(); };
+    wrap.appendChild(el);
+  });
+}
+
+function rebuildEvoSelects() {
+  const fromSel = document.getElementById('f-levelsFrom');
+  const toSel = document.getElementById('f-levelsTo');
+  const currentFrom = fromSel.value;
+  const currentTo = toSel.value;
+  fromSel.innerHTML = '<option value="">None</option>';
+  toSel.innerHTML = '<option value="">None</option>';
+  CARDS.forEach(c => {
+    if (c.id === editingId) return;
+    fromSel.innerHTML += `<option value="${c.id}">${c.pic} ${c.name}</option>`;
+    toSel.innerHTML += `<option value="${c.id}">${c.pic} ${c.name}</option>`;
+  });
+  fromSel.value = currentFrom;
+  toSel.value = currentTo;
+  updateChainPreview();
+}
+
+function updatePreview() {
+  const pic = document.getElementById('f-pic').value || '🎬';
+  const name = document.getElementById('f-name').value || 'Card Name';
+  const role = document.getElementById('f-role').value || 'Role';
+  const rarity = document.getElementById('f-rarity').value;
+  const bg = document.getElementById('f-bg').value;
+  const hasChain = document.getElementById('f-levelsFrom').value || document.getElementById('f-levelsTo').value;
+  const card = document.getElementById('preview-card');
+  card.style.background = bg;
+  card.className = 'preview-card' + (rarity === 'legendary' ? ' legendary-shimmer' : '');
+  document.getElementById('prev-emoji').textContent = pic;
+  document.getElementById('prev-name').textContent = name;
+  document.getElementById('prev-role').textContent = role;
+  document.getElementById('prev-rarity').textContent = rarity.toUpperCase();
+  const evoBadge = document.getElementById('prev-evo');
+  evoBadge.style.display = hasChain ? 'block' : 'none';
+}
+
+function updateChainPreview() {
+  updatePreview();
+  const fromId = parseInt(document.getElementById('f-levelsFrom').value);
+  const toId = parseInt(document.getElementById('f-levelsTo').value);
+  const row = document.getElementById('chain-preview-row');
+  const fromCard = CARDS.find(c => c.id === fromId);
+  const toCard = CARDS.find(c => c.id === toId);
+  const thisPic = document.getElementById('f-pic').value || '🎬';
+  const thisBg = document.getElementById('f-bg').value;
+
+  if (!fromCard && !toCard) { row.innerHTML = '<span class="chain-none">No chain set</span>'; return; }
+
+  let html = '';
+  if (fromCard) html += `<div class="chain-card-mini" style="background:${fromCard.bg}"><div style="font-size:14px">${fromCard.pic}</div><div class="cm-name">${fromCard.name}</div></div><div class="chain-arrow">→</div>`;
+  html += `<div class="chain-card-mini" style="background:${thisBg};border-color:#FFE600;"><div style="font-size:14px">${thisPic}</div><div class="cm-name">THIS CARD</div></div>`;
+  if (toCard) html += `<div class="chain-arrow">→</div><div class="chain-card-mini" style="background:${toCard.bg}"><div style="font-size:14px">${toCard.pic}</div><div class="cm-name">${toCard.name}</div></div>`;
+  row.innerHTML = html;
+}
+
+function addOrUpdateCard() {
+  const pic = document.getElementById('f-pic').value.trim();
+  const name = document.getElementById('f-name').value.trim();
+  const role = document.getElementById('f-role').value.trim();
+  const rarity = document.getElementById('f-rarity').value;
+  const bg = document.getElementById('f-bg').value;
+  const levelsFrom = parseInt(document.getElementById('f-levelsFrom').value) || undefined;
+  const levelsTo = parseInt(document.getElementById('f-levelsTo').value) || undefined;
+  if (!pic || !name || !role) { toast('FILL ALL FIELDS'); return; }
+
+  const cardData = { pic, name, role, rarity, bg };
+  if (levelsFrom) cardData.levelsFrom = levelsFrom;
+  if (levelsTo) cardData.levelsTo = levelsTo;
+
+  if (editingId !== null) {
+    const idx = CARDS.findIndex(c => c.id === editingId);
+    if (idx > -1) CARDS[idx] = { ...CARDS[idx], ...cardData };
+    toast('CARD UPDATED!');
+    cancelEdit();
+  } else {
+    const maxId = CARDS.length ? Math.max(...CARDS.map(c => c.id)) : 0;
+    CARDS.push({ id: maxId + 1, ...cardData });
+    toast('CARD ADDED!');
+    clearForm();
+  }
+  rebuildEvoSelects();
+  renderList();
+  updateStatsChips();
+}
+
+function editCard(id) {
+  const card = CARDS.find(c => c.id === id);
+  if (!card) return;
+  editingId = id;
+  document.getElementById('f-pic').value = card.pic;
+  document.getElementById('f-name').value = card.name;
+  document.getElementById('f-role').value = card.role;
+  document.getElementById('f-rarity').value = card.rarity;
+  document.getElementById('f-bg').value = card.bg;
+  rebuildEvoSelects();
+  document.getElementById('f-levelsFrom').value = card.levelsFrom || '';
+  document.getElementById('f-levelsTo').value = card.levelsTo || '';
+  updatePreview(); updateChainPreview();
+  document.getElementById('add-btn').textContent = 'UPDATE CARD';
+  document.getElementById('add-btn').classList.add('update-btn');
+  document.getElementById('cancel-btn').style.display = 'block';
+  document.getElementById('form-mode-label').style.display = 'none';
+  document.getElementById('editing-label').style.display = 'block';
+  renderList();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cancelEdit() {
+  editingId = null;
+  clearForm();
+  document.getElementById('add-btn').textContent = 'ADD CARD';
+  document.getElementById('add-btn').classList.remove('update-btn');
+  document.getElementById('cancel-btn').style.display = 'none';
+  document.getElementById('form-mode-label').style.display = 'block';
+  document.getElementById('editing-label').style.display = 'none';
+  rebuildEvoSelects();
+  renderList();
+}
+
+function deleteCard(id) {
+  const card = CARDS.find(c => c.id === id);
+  if (!card || !confirm('Delete "' + card.name + '"?')) return;
+  CARDS = CARDS.filter(c => c.id !== id);
+  // remove stale evo refs
+  CARDS.forEach(c => { if (c.levelsFrom === id) delete c.levelsFrom; if (c.levelsTo === id) delete c.levelsTo; });
+  if (editingId === id) cancelEdit();
+  rebuildEvoSelects();
+  renderList();
+  updateStatsChips();
+  toast('DELETED');
+}
+
+function clearForm() {
+  document.getElementById('f-pic').value = '';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-role').value = '';
+  document.getElementById('f-rarity').value = 'common';
+  document.getElementById('f-bg').value = '#2a2a3a';
+  document.getElementById('f-levelsFrom').value = '';
+  document.getElementById('f-levelsTo').value = '';
+  updatePreview(); updateChainPreview();
+}
+
+function setFilter(f, btn) {
+  activeFilter = f;
+  document.querySelectorAll('.filt-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderList();
+}
+
+function renderList() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const list = document.getElementById('card-list');
+  document.getElementById('card-count-label').textContent = CARDS.length + ' cards';
+  let filtered = CARDS;
+  if (activeFilter === 'common') filtered = filtered.filter(c => c.rarity === 'common');
+  else if (activeFilter === 'legendary') filtered = filtered.filter(c => c.rarity === 'legendary');
+  else if (activeFilter === 'levels') filtered = filtered.filter(c => c.levelsFrom || c.levelsTo);
+  if (q) filtered = filtered.filter(c => c.name.toLowerCase().includes(q) || c.role.toLowerCase().includes(q));
+  if (!filtered.length) { list.innerHTML = '<div class="empty-state">NO CARDS FOUND</div>'; return; }
+  list.innerHTML = '';
+  filtered.forEach(card => {
+    const row = document.createElement('div');
+    row.className = 'card-row' + (card.id === editingId ? ' editing' : '');
+    let evoText = '';
+    if (card.levelsFrom) { const f = CARDS.find(c => c.id === card.levelsFrom); if (f) evoText += `← ${f.name}`; }
+    if (card.levelsTo) { const t = CARDS.find(c => c.id === card.levelsTo); if (t) evoText += (evoText?' · ':'') + `→ ${t.name}`; }
+    row.innerHTML = `
+      <div class="cr-thumb" style="background:${card.bg}">${card.pic}</div>
+      <div class="cr-info">
+        <div class="cr-name">${card.name}</div>
+        <div class="cr-role">${card.role}</div>
+        <span class="cr-rarity ${card.rarity}">${card.rarity.toUpperCase()}</span>
+        ${evoText ? `<div class="cr-evo">${evoText}</div>` : ''}
+      </div>
+      <div class="cr-actions">
+        <button class="cr-btn" onclick="editCard(${card.id})">EDIT</button>
+        <button class="cr-btn del" onclick="deleteCard(${card.id})">DEL</button>
+      </div>`;
+    list.appendChild(row);
+  });
+}
+
+function updateStatsChips() {
+  document.getElementById('sc-common').textContent = CARDS.filter(c => c.rarity === 'common').length;
+  document.getElementById('sc-legendary').textContent = CARDS.filter(c => c.rarity === 'legendary').length;
+  document.getElementById('sc-levels').textContent = CARDS.filter(c => c.levelsFrom || c.levelsTo).length;
+}
+
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(CARDS, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'cards.json';
+  a.click();
+  toast('DOWNLOADED cards.json');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+updatePreview();
+</script>
+</body>
+</html>
