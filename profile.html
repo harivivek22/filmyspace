@@ -4,346 +4,222 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Player Profile — Filmy Space</title>
-<meta name="description" content="Telugu cinema player profile — cards collection and game stats"/>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&family=Tiro+Telugu&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;700;900&family=Tiro+Telugu&display=swap" rel="stylesheet"/>
 <style>
-/* ── Reset ── */
 *{box-sizing:border-box;margin:0;padding:0;}
-
-/* ── Root vars ── */
 :root{
-  --gold:#FFE600;
-  --gold2:#D4960A;
-  --gold-dim:rgba(255,200,80,.55);
-  --gold-faint:rgba(255,200,80,.18);
-  --dark:#1a0a00;
-  --panel:#1e1208;
-  --wall:#c4852a;
-  --red:#cc1111;
-  --border:rgba(212,150,10,.28);
-  --legendary-glow:rgba(255,180,0,.35);
+  --gold:#FFE600;--gold2:#D4960A;--gold-dim:rgba(255,200,80,.55);
+  --gold-faint:rgba(255,200,80,.18);--dark:#1a0a00;--panel:#1e1208;
+  --red:#cc1111;--border:rgba(212,150,10,.28);
 }
-
-body{
-  font-family:'Barlow Condensed',sans-serif;
-  background:var(--dark);
-  min-height:100vh;
-  color:var(--gold);
-  overflow-x:hidden;
-}
-
-/* ── Red side strips ── */
+body{font-family:'Barlow Condensed',sans-serif;background:var(--dark);min-height:100vh;color:var(--gold);overflow-x:hidden;}
 .strip{position:fixed;top:0;bottom:0;width:10px;background:repeating-linear-gradient(0deg,#cc0000 0,#cc0000 20px,#8b0000 20px,#8b0000 40px);z-index:100;}
 .strip-l{left:0;}.strip-r{right:0;}
+.page{max-width:560px;margin:0 auto;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding-bottom:60px;}
 
-/* ── Centered column ── */
-.page{max-width:560px;margin:0 auto;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding-bottom:60px;position:relative;}
-
-/* ── Banner ── */
 .banner{width:100%;background:var(--red);border-bottom:5px solid #8b0000;border-top:3px solid #ff6b35;padding:10px 0 6px;text-align:center;position:relative;overflow:hidden;}
 .banner::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(255,255,255,.04) 8px,rgba(255,255,255,.04) 16px);}
-.banner-title{font-family:'Bebas Neue',cursive;font-size:30px;color:var(--gold);letter-spacing:4px;text-shadow:2px 2px 0 #8b0000;position:relative;z-index:1;}
-.banner-sub{font-size:11px;color:rgba(255,230,100,.7);letter-spacing:3px;font-weight:700;position:relative;z-index:1;margin-top:1px;}
+.banner-title{font-family:'Bebas Neue',cursive;font-size:28px;color:var(--gold);letter-spacing:4px;text-shadow:2px 2px 0 #8b0000;position:relative;z-index:1;}
+.banner-sub{font-size:10px;color:rgba(255,230,100,.7);letter-spacing:3px;font-weight:700;position:relative;z-index:1;margin-top:1px;}
+.back-btn{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-family:'Bebas Neue',cursive;font-size:12px;color:rgba(255,230,100,.6);text-decoration:none;letter-spacing:2px;border:1px solid rgba(255,200,80,.2);padding:3px 8px;border-radius:4px;z-index:2;}
 
-/* ── Filmstrip ── */
-.filmstrip{width:100%;height:30px;background:#111;display:flex;align-items:center;overflow:hidden;border-top:2px solid #333;border-bottom:2px solid #333;}
+.filmstrip{width:100%;height:28px;background:#111;display:flex;align-items:center;overflow:hidden;border-top:2px solid #333;border-bottom:2px solid #333;}
 .filmstrip-track{display:flex;animation:filmroll 10s linear infinite;white-space:nowrap;}
-.fhole{display:inline-flex;flex-direction:column;align-items:center;justify-content:space-between;height:30px;padding:3px 5px;gap:4px;}
-.fhole span{display:block;width:12px;height:8px;background:#fff;border-radius:2px;opacity:.8;}
-.fhole-content{display:inline-block;width:44px;height:30px;background:#222;font-size:15px;line-height:30px;text-align:center;}
+.fhole{display:inline-flex;flex-direction:column;align-items:center;justify-content:space-between;height:28px;padding:3px 5px;gap:3px;}
+.fhole span{display:block;width:12px;height:7px;background:#fff;border-radius:2px;opacity:.8;}
+.fhole-content{display:inline-block;width:40px;height:28px;background:#222;font-size:14px;line-height:28px;text-align:center;}
 @keyframes filmroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 
-/* ── Nav ── */
-.nav{display:flex;width:100%;border-bottom:3px solid var(--gold2);background:rgba(0,0,0,.35);}
-.nav-btn{flex:1;padding:10px 4px;font-family:'Bebas Neue',cursive;font-size:15px;letter-spacing:2px;border:none;background:transparent;color:var(--gold-dim);cursor:pointer;transition:all .18s;border-bottom:3px solid transparent;margin-bottom:-3px;}
-.nav-btn.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(255,200,80,.06);}
-.nav-btn:hover:not(.active){color:var(--gold);background:rgba(255,200,80,.04);}
-.pane{display:none;width:100%;flex-direction:column;align-items:center;padding:0 20px;}
-.pane.active{display:flex;}
-
-/* ── Profile hero ── */
-.profile-hero{
-  width:100%;
-  background:var(--panel);
-  border:1.5px solid var(--border);
-  border-radius:0 0 10px 10px;
-  padding:20px;
-  display:flex;
-  gap:18px;
-  align-items:flex-start;
-  margin-bottom:16px;
-  position:relative;
-  overflow:hidden;
-}
+/* Profile hero */
+.profile-hero{width:100%;background:var(--panel);border:1.5px solid var(--border);padding:18px;display:flex;gap:16px;align-items:flex-start;position:relative;overflow:hidden;}
 .profile-hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent,transparent 20px,rgba(255,200,80,.02) 20px,rgba(255,200,80,.02) 21px);pointer-events:none;}
-
-.avatar-wrap{position:relative;flex-shrink:0;}
-.avatar{width:80px;height:80px;border-radius:50%;border:3px solid var(--gold2);background:var(--dark);display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;overflow:hidden;}
-.avatar-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
-.avatar-frame{position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,200,80,.2);}
-
-.profile-info{flex:1;min-width:0;}
-.profile-username{font-family:'Bebas Neue',cursive;font-size:26px;color:var(--gold);letter-spacing:2px;line-height:1;}
-.profile-handle{font-size:13px;color:var(--gold-dim);letter-spacing:1px;margin-top:2px;}
-.profile-bio{font-size:13px;color:rgba(255,200,80,.7);margin-top:8px;line-height:1.5;font-weight:400;}
-.profile-joined{font-size:11px;color:rgba(255,200,80,.4);letter-spacing:1px;margin-top:6px;font-weight:700;}
-
+.avatar{width:72px;height:72px;border-radius:50%;border:3px solid var(--gold2);background:var(--dark);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;}
+.profile-info{flex:1;}
+.profile-username{font-family:'Bebas Neue',cursive;font-size:28px;color:var(--gold);letter-spacing:2px;line-height:1;}
+.profile-handle{font-size:12px;color:var(--gold-dim);letter-spacing:1px;margin-top:2px;}
 .profile-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
 .badge{padding:3px 10px;border-radius:14px;font-size:10px;font-weight:700;letter-spacing:1px;border:1px solid;}
 .badge-legendary{border-color:rgba(255,180,0,.6);background:rgba(255,180,0,.1);color:#ffcc44;}
 .badge-streak{border-color:rgba(255,100,100,.5);background:rgba(200,30,30,.15);color:#ff8888;}
-.badge-top{border-color:rgba(100,200,100,.5);background:rgba(30,120,30,.15);color:#88dd88;}
 .badge-verified{border-color:var(--border);background:var(--gold-faint);color:var(--gold-dim);}
-
-.share-btn{
-  position:absolute;top:14px;right:14px;
-  background:transparent;border:1.5px solid var(--border);
-  color:var(--gold-dim);font-family:'Bebas Neue',cursive;
-  font-size:13px;letter-spacing:2px;padding:5px 12px;
-  border-radius:4px;cursor:pointer;transition:all .18s;
-}
+.share-btn{position:absolute;top:12px;right:12px;background:transparent;border:1.5px solid var(--border);color:var(--gold-dim);font-family:'Bebas Neue',cursive;font-size:12px;letter-spacing:2px;padding:4px 10px;border-radius:4px;cursor:pointer;transition:all .18s;}
 .share-btn:hover{border-color:var(--gold);color:var(--gold);}
 
-/* ── Stats bar ── */
-.stats-bar{
-  width:100%;display:flex;
-  background:rgba(0,0,0,.45);
-  border:1.5px solid var(--border);
-  border-radius:8px;
-  overflow:hidden;
-  margin-bottom:16px;
-}
-.stat-cell{flex:1;padding:12px 8px;text-align:center;border-right:1px solid var(--border);}
+/* Stats bar */
+.stats-bar{width:100%;display:flex;background:rgba(0,0,0,.45);border:1.5px solid var(--border);border-top:none;}
+.stat-cell{flex:1;padding:10px 6px;text-align:center;border-right:1px solid var(--border);}
 .stat-cell:last-child{border-right:none;}
-.stat-num{font-family:'Bebas Neue',cursive;font-size:26px;color:var(--gold);line-height:1;}
-.stat-num.red{color:#ff6b6b;}
+.stat-num{font-family:'Bebas Neue',cursive;font-size:24px;color:var(--gold);line-height:1;}
 .stat-num.green{color:#88dd88;}
 .stat-label{font-size:9px;color:var(--gold-dim);letter-spacing:2px;font-weight:700;margin-top:2px;text-transform:uppercase;}
 
-/* ── Section title ── */
-.section-hdr{
-  width:100%;display:flex;align-items:center;justify-content:space-between;
-  margin:4px 0 12px;
-}
-.section-title{font-family:'Bebas Neue',cursive;font-size:20px;color:var(--gold);letter-spacing:3px;}
+/* Nav */
+.nav{display:flex;width:100%;border-bottom:3px solid var(--gold2);background:rgba(0,0,0,.35);}
+.nav-btn{flex:1;padding:10px 4px;font-family:'Bebas Neue',cursive;font-size:14px;letter-spacing:2px;border:none;background:transparent;color:var(--gold-dim);cursor:pointer;transition:all .18s;border-bottom:3px solid transparent;margin-bottom:-3px;}
+.nav-btn.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(255,200,80,.06);}
+.pane{display:none;width:100%;flex-direction:column;align-items:center;padding:0 16px;}
+.pane.active{display:flex;}
+
+/* Section */
+.section-hdr{width:100%;display:flex;align-items:center;justify-content:space-between;margin:16px 0 10px;}
+.section-title{font-family:'Bebas Neue',cursive;font-size:18px;color:var(--gold);letter-spacing:3px;}
 .section-sub{font-size:11px;color:var(--gold-dim);letter-spacing:1px;font-weight:700;}
 
-/* ── Game stats panel ── */
-.game-panel{
-  width:100%;background:var(--panel);
-  border:1.5px solid var(--border);
-  border-radius:8px;padding:16px;
-  margin-bottom:12px;
-}
-.game-panel-title{
-  font-family:'Bebas Neue',cursive;font-size:16px;
-  color:var(--gold);letter-spacing:2px;
-  display:flex;align-items:center;gap:8px;
-  margin-bottom:14px;
-  padding-bottom:10px;
-  border-bottom:1px solid var(--border);
-}
-.game-tag{font-family:'Tiro Telugu',serif;font-size:14px;color:var(--gold-dim);}
-
+/* Game panel */
+.game-panel{width:100%;background:var(--panel);border:1.5px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px;}
 .game-rows{display:flex;flex-direction:column;gap:10px;}
 .game-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;}
 .game-row-label{color:var(--gold-dim);letter-spacing:1px;}
 .game-row-val{font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:1px;color:var(--gold);}
-.game-row-val.mono{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;}
-
-.streak-bar{display:flex;gap:4px;margin-top:4px;}
+.game-row-val.mono{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;}
+.streak-bar{display:flex;gap:4px;flex-wrap:wrap;}
 .streak-dot{width:18px;height:18px;border-radius:3px;}
 .streak-dot.win{background:var(--gold);}
-.streak-dot.loss{background:rgba(200,30,30,.5);border:1px solid rgba(200,30,30,.3);}
+.streak-dot.loss{background:rgba(200,30,30,.5);}
 .streak-dot.empty{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);}
 
-.best-time{
-  font-family:'Bebas Neue',cursive;font-size:28px;color:var(--gold);
-  letter-spacing:2px;background:rgba(0,0,0,.4);
-  padding:6px 16px;border-radius:4px;border:1px solid var(--border);
-}
-
-/* ── Activity feed ── */
-.activity-feed{width:100%;display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
-.activity-item{
-  background:var(--panel);border:1.5px solid var(--border);
-  border-radius:8px;padding:12px 14px;
-  display:flex;align-items:center;gap:12px;
-}
-.activity-icon{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.activity-icon.pull{background:rgba(200,150,10,.2);border:1px solid rgba(200,150,10,.3);}
-.activity-icon.puzzle{background:rgba(30,120,180,.2);border:1px solid rgba(30,120,180,.3);}
-.activity-icon.trade{background:rgba(180,30,30,.2);border:1px solid rgba(180,30,30,.3);}
-.activity-icon.level{background:rgba(30,180,80,.2);border:1px solid rgba(30,180,80,.3);}
-.activity-text{flex:1;}
-.activity-main{font-size:13px;color:rgba(255,230,150,.9);font-weight:700;line-height:1.4;}
-.activity-main span{color:var(--gold);}
-.activity-time{font-size:10px;color:rgba(255,200,80,.35);letter-spacing:1px;margin-top:2px;font-weight:700;}
-.activity-card-mini{width:32px;height:44px;border-radius:4px;border:1.5px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;position:relative;overflow:hidden;}
-.activity-card-mini::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 60%);}
-
-/* ── Card collection ── */
-.collection-wrap{width:100%;}
-.coll-filter-bar{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+/* Cards */
+.coll-filter-bar{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;width:100%;}
 .cf{padding:4px 12px;border-radius:14px;border:1px solid var(--border);background:transparent;font-size:11px;font-weight:700;cursor:pointer;color:var(--gold-dim);letter-spacing:1px;transition:all .15s;}
 .cf.active{background:var(--gold);color:var(--dark);border-color:var(--gold);}
-
-.coll-progress{
-  width:100%;background:rgba(0,0,0,.4);border-radius:4px;height:6px;
-  margin-bottom:14px;overflow:hidden;
-}
+.coll-progress{width:100%;background:rgba(0,0,0,.4);border-radius:4px;height:6px;margin-bottom:12px;overflow:hidden;}
 .coll-progress-bar{height:100%;background:var(--gold2);border-radius:4px;transition:width .5s;}
-
-.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;width:100%;}
-
-.card{
-  aspect-ratio:5/7;border-radius:8px;
-  border:2px solid rgba(255,255,255,.75);
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:flex-start;padding-bottom:6px;
-  position:relative;overflow:hidden;
-  transition:transform .18s;cursor:pointer;
-}
-.card.owned:hover{transform:translateY(-5px) scale(1.03);}
-.card:not(.owned){opacity:.15;filter:grayscale(1);cursor:default;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px;width:100%;}
+.card{aspect-ratio:5/7;border-radius:8px;border:2px solid rgba(255,255,255,.75);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-bottom:6px;position:relative;overflow:hidden;transition:transform .18s;cursor:pointer;}
+.card.owned:hover{transform:translateY(-4px) scale(1.03);}
+.card:not(.owned){opacity:.12;filter:grayscale(1);cursor:default;}
 .card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.16) 0%,transparent 55%);pointer-events:none;}
-
-.card-top{padding:8px 4px 3px;display:flex;flex-direction:column;align-items:center;}
-.card-emoji{font-size:24px;}
-.card-name{font-size:7px;font-weight:900;text-align:center;padding:0 3px;color:rgba(255,255,255,.95);text-shadow:0 1px 3px rgba(0,0,0,.7);margin-top:3px;line-height:1.2;}
-.card-role{font-size:6px;color:rgba(255,255,255,.65);text-align:center;padding:0 3px;line-height:1.2;margin-top:1px;}
-.card-rarity{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:900;letter-spacing:1px;background:rgba(0,0,0,.55);color:#fff;padding:1px 5px;border-radius:3px;white-space:nowrap;}
+.card-top{padding:7px 4px 3px;display:flex;flex-direction:column;align-items:center;}
+.card-emoji{font-size:22px;}
+.card-name{font-size:7px;font-weight:900;text-align:center;color:rgba(255,255,255,.95);text-shadow:0 1px 3px rgba(0,0,0,.7);margin-top:3px;line-height:1.2;padding:0 2px;}
+.card-role{font-size:6px;color:rgba(255,255,255,.65);text-align:center;padding:0 2px;margin-top:1px;}
+.card-rarity{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);font-size:6px;font-weight:900;letter-spacing:1px;background:rgba(0,0,0,.55);color:#fff;padding:1px 5px;border-radius:3px;white-space:nowrap;}
 .card-dup{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:var(--gold);font-size:7px;font-weight:900;padding:1px 4px;border-radius:3px;}
-.card-lv{position:absolute;top:4px;left:4px;font-size:7px;font-weight:900;padding:1px 5px;border-radius:3px;letter-spacing:.5px;}
+.card-lv{position:absolute;top:4px;left:4px;font-size:7px;font-weight:900;padding:1px 5px;border-radius:3px;}
 .card-lv.lv1{background:rgba(100,150,255,.4);color:#adf;}
 .card-lv.lv2{background:rgba(200,150,50,.4);color:#ffd;}
 .card-lv.lv3{background:rgba(220,50,50,.4);color:#faa;}
-
-.legendary-shimmer::before{
-  content:'';position:absolute;top:-50%;left:-60%;
-  width:40%;height:200%;
-  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.28) 50%,transparent 60%);
-  animation:shimmer 2.4s ease-in-out infinite;pointer-events:none;z-index:3;
-}
+.legendary-shimmer::before{content:'';position:absolute;top:-50%;left:-60%;width:40%;height:200%;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.28) 50%,transparent 60%);animation:shimmer 2.4s ease-in-out infinite;pointer-events:none;z-index:3;}
 @keyframes shimmer{0%{left:-60%;}100%{left:120%;}}
 
-.empty-state{
-  width:100%;text-align:center;padding:40px 20px;
-  font-size:13px;color:var(--gold-dim);letter-spacing:1px;
-  line-height:1.7;
+/* Friends tab */
+.add-friend-box{width:100%;background:var(--panel);border:1.5px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;}
+.add-friend-title{font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:2px;color:var(--gold);margin-bottom:10px;}
+.add-friend-row{display:flex;gap:8px;}
+.friend-input{
+  flex:1;padding:9px 12px;background:rgba(0,0,0,.4);
+  border:1.5px solid var(--border);border-radius:6px;
+  color:var(--gold);font-size:15px;font-family:'Bebas Neue',cursive;
+  letter-spacing:1px;outline:none;
 }
+.friend-input::placeholder{color:rgba(255,200,80,.25);}
+.friend-input:focus{border-color:rgba(212,150,10,.6);}
+.add-btn{padding:9px 16px;background:var(--gold);color:var(--dark);border:none;border-radius:6px;font-family:'Bebas Neue',cursive;font-size:15px;letter-spacing:1px;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
+.add-btn:hover{opacity:.85;}
+.add-btn:disabled{opacity:.35;cursor:not-allowed;}
+.friend-msg{font-size:12px;margin-top:8px;letter-spacing:.5px;min-height:18px;}
+.friend-msg.ok{color:#88dd88;}
+.friend-msg.err{color:#ff8888;}
 
-/* ── Friends leaderboard ── */
-.lb-list{width:100%;display:flex;flex-direction:column;gap:0;}
-.lb-row{
-  display:flex;align-items:center;gap:12px;
-  padding:11px 14px;
-  background:var(--panel);
-  border:1.5px solid var(--border);
-  border-bottom-width:0;
-  font-size:13px;
-}
+.lb-list{width:100%;display:flex;flex-direction:column;}
+.lb-row{display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--panel);border:1.5px solid var(--border);border-bottom-width:0;font-size:13px;}
 .lb-row:first-child{border-radius:8px 8px 0 0;}
 .lb-row:last-child{border-radius:0 0 8px 8px;border-bottom-width:1.5px;}
 .lb-row.you{background:rgba(255,200,80,.07);border-color:rgba(255,200,80,.4);}
 .lb-rank{width:22px;text-align:center;font-family:'Bebas Neue',cursive;font-size:18px;color:var(--gold-dim);}
 .lb-rank.top{color:var(--gold);}
-.lb-av{width:34px;height:34px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.lb-av{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:rgba(0,0,0,.3);}
 .lb-name{flex:1;font-weight:700;letter-spacing:.5px;}
 .lb-name.you-name{color:var(--gold);}
-.lb-cards{font-size:11px;color:var(--gold-dim);margin-right:4px;}
-.lb-score{font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:1px;color:var(--gold);}
+.lb-result{font-size:12px;margin-right:4px;}
+.lb-result.c{color:#88dd88;}
+.lb-result.w{color:#ff8888;}
+.lb-result.p{color:rgba(255,200,80,.35);}
+.lb-time{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:rgba(255,200,80,.6);background:rgba(0,0,0,.3);padding:2px 8px;border-radius:8px;}
+.lb-time.best{color:#88dd88;background:rgba(30,120,50,.2);}
+.lb-time.you-t{color:var(--gold);background:rgba(255,200,80,.1);}
 
-/* ── Toast ── */
-.toast{
-  position:fixed;bottom:30px;left:50%;
-  transform:translateX(-50%) translateY(80px);
-  background:var(--gold);color:var(--dark);
-  padding:9px 22px;font-family:'Bebas Neue',cursive;
-  font-size:18px;letter-spacing:2px;
-  border:3px solid var(--gold2);z-index:999;
-  transition:transform .35s cubic-bezier(.34,1.56,.64,1);
-  pointer-events:none;white-space:nowrap;
-  box-shadow:4px 4px 0 rgba(0,0,0,.4);
+.empty-friends{
+  width:100%;text-align:center;padding:32px 16px;
+  background:var(--panel);border:1.5px solid var(--border);
+  border-radius:8px;margin-bottom:14px;
 }
+.empty-friends-icon{font-size:32px;margin-bottom:10px;}
+.empty-friends-title{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;}
+.empty-friends-sub{font-size:13px;color:var(--gold-dim);line-height:1.6;}
+
+.friends-manage{width:100%;background:var(--panel);border:1.5px solid var(--border);border-radius:8px;margin-bottom:14px;overflow:hidden;}
+.friend-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);font-size:13px;}
+.friend-item:last-child{border-bottom:none;}
+.friend-item-name{flex:1;font-weight:700;letter-spacing:.5px;}
+.remove-btn{font-size:11px;color:rgba(255,100,100,.6);border:1px solid rgba(255,100,100,.3);background:transparent;padding:3px 8px;border-radius:4px;cursor:pointer;font-family:'Bebas Neue',cursive;letter-spacing:1px;}
+.remove-btn:hover{color:#ff8888;border-color:#ff8888;}
+
+.share-profile-box{width:100%;background:rgba(0,0,0,.3);border:1.5px solid var(--border);border-radius:8px;padding:14px;text-align:center;margin-bottom:20px;}
+.share-profile-box p{font-size:13px;color:var(--gold-dim);margin-bottom:12px;letter-spacing:.5px;line-height:1.5;}
+.share-profile-btn{background:var(--gold);color:var(--dark);border:none;font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:3px;padding:10px 28px;cursor:pointer;border-radius:4px;box-shadow:3px 3px 0 rgba(0,0,0,.3);transition:opacity .15s;}
+.share-profile-btn:hover{opacity:.85;}
+
+/* Activity */
+.activity-feed{width:100%;display:flex;flex-direction:column;gap:8px;}
+.activity-item{background:var(--panel);border:1.5px solid var(--border);border-radius:8px;padding:11px 13px;display:flex;align-items:center;gap:12px;}
+.activity-icon{width:34px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.activity-icon.pull{background:rgba(200,150,10,.2);border:1px solid rgba(200,150,10,.3);}
+.activity-icon.puzzle{background:rgba(30,120,180,.2);border:1px solid rgba(30,120,180,.3);}
+.activity-text{flex:1;}
+.activity-main{font-size:13px;color:rgba(255,230,150,.9);font-weight:700;line-height:1.4;}
+.activity-main span{color:var(--gold);}
+.activity-time{font-size:10px;color:rgba(255,200,80,.35);letter-spacing:1px;margin-top:2px;font-weight:700;}
+
+/* Footer */
+.footer{background:var(--panel);border:1.5px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:rgba(255,200,80,.35);width:100%;letter-spacing:1px;font-weight:700;}
+.countdown{font-family:'Barlow Condensed',sans-serif;font-weight:700;color:rgba(255,200,80,.6);}
+
+/* Toast */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--gold);color:var(--dark);padding:9px 22px;font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:2px;border:3px solid var(--gold2);z-index:999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap;box-shadow:4px 4px 0 rgba(0,0,0,.4);}
 .toast.show{transform:translateX(-50%) translateY(0);}
 
-/* ── Responsive ── */
-@media(max-width:420px){
-  .card-grid{grid-template-columns:repeat(auto-fill,minmax(68px,1fr));}
-  .stats-bar{flex-wrap:wrap;}
-  .stat-cell{min-width:50%;}
-}
+/* Loading spinner */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,200,80,.3);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+@media(max-width:420px){.card-grid{grid-template-columns:repeat(auto-fill,minmax(66px,1fr));}}
 </style>
 </head>
 <body>
-
 <div class="strip strip-l"></div>
 <div class="strip strip-r"></div>
 
 <div class="page">
-
-  <!-- Banner -->
-  <div class="banner" style="width:100%;position:relative;">
+  <div class="banner" style="width:100%">
+    <a class="back-btn" href="home.html">← HUB</a>
     <div class="banner-title">FILMY SPACE</div>
     <div class="banner-sub">PLAYER PROFILE</div>
-    <a href="home.html" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-family:'Bebas Neue',cursive;font-size:12px;color:rgba(255,230,100,.6);text-decoration:none;letter-spacing:2px;border:1px solid rgba(255,200,80,.2);padding:3px 8px;border-radius:4px;">← HUB</a>
   </div>
 
-  <!-- Filmstrip -->
   <div class="filmstrip" style="width:100%">
     <div class="filmstrip-track" id="fs1"></div>
     <div class="filmstrip-track" id="fs2"></div>
   </div>
 
-  <!-- Profile hero -->
-  <div class="profile-hero" style="width:100%;margin-top:0;border-radius:0;">
-    <div class="avatar-wrap">
-      <div class="avatar" id="avatarEl">
-        <div class="avatar-inner" id="avatarInner">🎬</div>
-        <div class="avatar-frame"></div>
-      </div>
-    </div>
+  <div class="profile-hero" style="width:100%">
+    <div class="avatar" id="avatarEl">🎬</div>
     <div class="profile-info">
-      <div class="profile-username" id="usernameEl">CINEMANIAC</div>
-      <div class="profile-handle" id="handleEl">@cinemaniac · Member since 2024</div>
-      <div class="profile-bio" id="bioEl">Telugu cinema fanatic. Baahubali loyalist. Ask me anything about Rajamouli.</div>
-      <div class="profile-badges" id="badgesEl">
-        <span class="badge badge-legendary">⭐ LEGENDARY COLLECTOR</span>
-        <span class="badge badge-streak">🔥 7 DAY STREAK</span>
-        <span class="badge badge-top">🏆 TOP 10</span>
-      </div>
+      <div class="profile-username" id="usernameEl">—</div>
+      <div class="profile-handle" id="handleEl">@username</div>
+      <div class="profile-badges" id="badgesEl"></div>
     </div>
     <button class="share-btn" onclick="shareProfile()">SHARE</button>
   </div>
 
-  <!-- Stats bar -->
-  <div style="width:100%;padding:0 20px;">
-    <div class="stats-bar">
-      <div class="stat-cell">
-        <div class="stat-num" id="st-cards">0</div>
-        <div class="stat-label">Cards</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-num" id="st-legendary">0</div>
-        <div class="stat-label">Legendary</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-num green" id="st-streak">0</div>
-        <div class="stat-label">Streak</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-num" id="st-puzzles">0</div>
-        <div class="stat-label">Puzzles</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-num" id="st-pulls">0</div>
-        <div class="stat-label">Pulls</div>
-      </div>
-    </div>
+  <div class="stats-bar" style="width:100%">
+    <div class="stat-cell"><div class="stat-num" id="st-cards">0</div><div class="stat-label">Cards</div></div>
+    <div class="stat-cell"><div class="stat-num" id="st-legendary">0</div><div class="stat-label">Legendary</div></div>
+    <div class="stat-cell"><div class="stat-num green" id="st-streak">0</div><div class="stat-label">Streak</div></div>
+    <div class="stat-cell"><div class="stat-num" id="st-puzzles">0</div><div class="stat-label">Puzzles</div></div>
+    <div class="stat-cell"><div class="stat-num" id="st-pulls">0</div><div class="stat-label">Pulls</div></div>
   </div>
 
-  <!-- Nav tabs -->
   <div class="nav" style="width:100%">
     <button class="nav-btn active" onclick="switchTab('overview',this)">OVERVIEW</button>
     <button class="nav-btn" onclick="switchTab('cards',this)">CARDS</button>
@@ -351,197 +227,130 @@ body{
     <button class="nav-btn" onclick="switchTab('friends',this)">FRIENDS</button>
   </div>
 
-  <!-- ── OVERVIEW TAB ── -->
+  <!-- OVERVIEW -->
   <div class="pane active" id="pane-overview">
-
-    <div style="height:16px"></div>
-
-    <div class="section-hdr">
-      <div class="section-title">RECENT ACTIVITY</div>
-      <div class="section-sub" id="activityCount">0 EVENTS</div>
-    </div>
-
-    <div class="activity-feed" id="activityFeed"></div>
-
-    <div class="section-hdr" style="margin-top:8px">
-      <div class="section-title">SHOWCASE CARDS</div>
-      <div class="section-sub">TOP 6</div>
-    </div>
-
+    <div class="section-hdr"><div class="section-title">RECENT ACTIVITY</div><div class="section-sub" id="activityCount"></div></div>
+    <div class="activity-feed" id="activityFeed" style="margin-bottom:16px"></div>
+    <div class="section-hdr"><div class="section-title">SHOWCASE</div><div class="section-sub">TOP CARDS</div></div>
     <div class="card-grid" id="showcaseGrid" style="margin-bottom:16px"></div>
-
-    <div class="section-hdr" style="margin-top:4px">
-      <div class="section-title"><span class="game-tag">సినిమా క్రమం</span> STATS</div>
-    </div>
-
-    <div class="game-panel" style="width:100%;margin-bottom:20px">
+    <div class="section-hdr"><div class="section-title" style="font-family:'Tiro Telugu',serif;font-size:16px">సినిమా క్రమం</div><div class="section-sub">STATS</div></div>
+    <div class="game-panel">
       <div class="game-rows">
-        <div class="game-row">
-          <span class="game-row-label">PUZZLES PLAYED</span>
-          <span class="game-row-val" id="gp-played">0</span>
-        </div>
-        <div class="game-row">
-          <span class="game-row-label">WIN RATE</span>
-          <span class="game-row-val" id="gp-winrate">0%</span>
-        </div>
-        <div class="game-row">
-          <span class="game-row-label">CURRENT STREAK</span>
-          <span class="game-row-val" id="gp-streak">0 🔥</span>
-        </div>
-        <div class="game-row">
-          <span class="game-row-label">PERSONAL BEST TIME</span>
-          <span class="game-row-val mono" id="gp-best">--:--.-</span>
-        </div>
-        <div class="game-row">
-          <span class="game-row-label">AVG TIME</span>
-          <span class="game-row-val mono" id="gp-avg">--:--.-</span>
-        </div>
-        <div class="game-row" style="flex-direction:column;align-items:flex-start;gap:8px">
-          <span class="game-row-label">LAST 14 RESULTS</span>
-          <div class="streak-bar" id="gp-history"></div>
-        </div>
+        <div class="game-row"><span class="game-row-label">PUZZLES PLAYED</span><span class="game-row-val" id="gp-played">0</span></div>
+        <div class="game-row"><span class="game-row-label">WIN RATE</span><span class="game-row-val" id="gp-winrate">0%</span></div>
+        <div class="game-row"><span class="game-row-label">STREAK</span><span class="game-row-val" id="gp-streak">0</span></div>
+        <div class="game-row"><span class="game-row-label">BEST TIME</span><span class="game-row-val mono" id="gp-best">—</span></div>
+        <div class="game-row" style="flex-direction:column;align-items:flex-start;gap:6px"><span class="game-row-label">LAST 14</span><div class="streak-bar" id="gp-history"></div></div>
       </div>
     </div>
-
   </div>
 
-  <!-- ── CARDS TAB ── -->
+  <!-- CARDS -->
   <div class="pane" id="pane-cards">
-
-    <div style="height:16px"></div>
-
-    <div class="section-hdr">
-      <div class="section-title">COLLECTION</div>
-      <div class="section-sub" id="collCountLabel">0 / 0</div>
-    </div>
-
-    <div class="coll-progress" style="width:100%">
-      <div class="coll-progress-bar" id="collProgressBar" style="width:0%"></div>
-    </div>
-
+    <div class="section-hdr"><div class="section-title">COLLECTION</div><div class="section-sub" id="collCountLabel">0 / 34</div></div>
+    <div class="coll-progress" style="width:100%"><div class="coll-progress-bar" id="collProgressBar" style="width:0%"></div></div>
     <div class="coll-filter-bar">
-      <button class="cf active" data-filter="all" onclick="setFilter('all',this)">ALL</button>
-      <button class="cf" data-filter="owned" onclick="setFilter('owned',this)">OWNED</button>
-      <button class="cf" data-filter="legendary" onclick="setFilter('legendary',this)">LEGENDARY</button>
-      <button class="cf" data-filter="common" onclick="setFilter('common',this)">COMMON</button>
-      <button class="cf" data-filter="levels" onclick="setFilter('levels',this)">LEVELS</button>
+      <button class="cf active" onclick="setFilter('all',this)">ALL</button>
+      <button class="cf" onclick="setFilter('owned',this)">OWNED</button>
+      <button class="cf" onclick="setFilter('legendary',this)">LEGENDARY</button>
+      <button class="cf" onclick="setFilter('common',this)">COMMON</button>
     </div>
-
     <div class="card-grid" id="collGrid" style="margin-bottom:20px"></div>
-
   </div>
 
-  <!-- ── GAMES TAB ── -->
+  <!-- GAMES -->
   <div class="pane" id="pane-games">
-
-    <div style="height:16px"></div>
-
     <div class="section-hdr">
-      <div class="section-title"><span class="game-tag">సినిమా క్రమం</span></div>
+      <div class="section-title" style="font-family:'Tiro Telugu',serif;font-size:16px">సినిమా క్రమం</div>
       <a href="game/index.html" style="font-family:'Bebas Neue',cursive;font-size:13px;color:var(--gold-dim);letter-spacing:2px;text-decoration:none;border:1px solid var(--border);padding:3px 10px;border-radius:4px;">PLAY →</a>
     </div>
-
-    <div class="game-panel" style="width:100%">
+    <div class="game-panel">
       <div class="game-rows">
-        <div class="game-row"><span class="game-row-label">PUZZLES PLAYED</span><span class="game-row-val" id="gg-played">0</span></div>
-        <div class="game-row"><span class="game-row-label">CORRECT</span><span class="game-row-val green" id="gg-correct">0</span></div>
+        <div class="game-row"><span class="game-row-label">PLAYED</span><span class="game-row-val" id="gg-played">0</span></div>
+        <div class="game-row"><span class="game-row-label">CORRECT</span><span class="game-row-val" id="gg-correct">0</span></div>
         <div class="game-row"><span class="game-row-label">WIN RATE</span><span class="game-row-val" id="gg-winrate">0%</span></div>
-        <div class="game-row"><span class="game-row-label">CURRENT STREAK</span><span class="game-row-val" id="gg-streak">0 🔥</span></div>
-        <div class="game-row"><span class="game-row-label">MAX STREAK</span><span class="game-row-val" id="gg-maxstreak">0</span></div>
-        <div class="game-row"><span class="game-row-label">PERSONAL BEST</span><span class="game-row-val mono" id="gg-best">—</span></div>
-        <div class="game-row"><span class="game-row-label">AVERAGE TIME</span><span class="game-row-val mono" id="gg-avg">—</span></div>
-        <div class="game-row" style="flex-direction:column;align-items:flex-start;gap:8px">
-          <span class="game-row-label">RESULT HISTORY</span>
-          <div class="streak-bar" id="gg-history" style="flex-wrap:wrap;gap:4px;max-width:100%"></div>
-        </div>
+        <div class="game-row"><span class="game-row-label">CURRENT STREAK</span><span class="game-row-val" id="gg-streak">0</span></div>
+        <div class="game-row"><span class="game-row-label">BEST TIME</span><span class="game-row-val mono" id="gg-best">—</span></div>
+        <div class="game-row"><span class="game-row-label">AVG TIME</span><span class="game-row-val mono" id="gg-avg">—</span></div>
+        <div class="game-row" style="flex-direction:column;align-items:flex-start;gap:6px"><span class="game-row-label">HISTORY</span><div class="streak-bar" id="gg-history" style="flex-wrap:wrap"></div></div>
       </div>
     </div>
-
-    <div style="height:16px"></div>
-
-    <div class="section-hdr">
+    <div class="section-hdr" style="margin-top:4px">
       <div class="section-title">TOLLYWOOD CARDS</div>
-      <a href="index.html" style="font-family:'Bebas Neue',cursive;font-size:13px;color:var(--gold-dim);letter-spacing:2px;text-decoration:none;border:1px solid var(--border);padding:3px 10px;border-radius:4px;">PLAY →</a>
+      <a href="cards.html" style="font-family:'Bebas Neue',cursive;font-size:13px;color:var(--gold-dim);letter-spacing:2px;text-decoration:none;border:1px solid var(--border);padding:3px 10px;border-radius:4px;">PLAY →</a>
     </div>
-
-    <div class="game-panel" style="width:100%;margin-bottom:20px">
+    <div class="game-panel" style="margin-bottom:20px">
       <div class="game-rows">
         <div class="game-row"><span class="game-row-label">TOTAL PULLS</span><span class="game-row-val" id="gc-pulls">0</span></div>
         <div class="game-row"><span class="game-row-label">CARDS COLLECTED</span><span class="game-row-val" id="gc-collected">0</span></div>
         <div class="game-row"><span class="game-row-label">LEGENDARY CARDS</span><span class="game-row-val" id="gc-legendary">0</span></div>
-        <div class="game-row"><span class="game-row-label">TRADES MADE</span><span class="game-row-val" id="gc-trades">0</span></div>
         <div class="game-row"><span class="game-row-label">COLLECTION %</span><span class="game-row-val" id="gc-pct">0%</span></div>
       </div>
     </div>
-
   </div>
 
-  <!-- ── FRIENDS TAB ── -->
+  <!-- FRIENDS -->
   <div class="pane" id="pane-friends">
 
-    <div style="height:16px"></div>
-
-    <div class="section-hdr">
-      <div class="section-title">LEADERBOARD</div>
-      <div class="section-sub">TODAY'S PUZZLE</div>
+    <div class="section-hdr"><div class="section-title">ADD FRIEND</div></div>
+    <div class="add-friend-box">
+      <div class="add-friend-title">FIND BY USERNAME</div>
+      <div class="add-friend-row">
+        <input class="friend-input" id="friendInput" type="text" placeholder="THEIR USERNAME" maxlength="20" autocomplete="off" autocorrect="off" autocapitalize="off"/>
+        <button class="add-btn" id="addFriendBtn" onclick="handleAddFriend()">ADD</button>
+      </div>
+      <div class="friend-msg" id="friendMsg"></div>
     </div>
 
-    <div class="lb-list" id="lbList" style="width:100%;margin-bottom:20px"></div>
+    <div class="section-hdr"><div class="section-title">TODAY'S PUZZLE</div><div class="section-sub">FRIENDS LEADERBOARD</div></div>
+    <div id="lbContainer" style="width:100%;margin-bottom:14px"></div>
 
-    <div class="section-hdr" style="margin-top:4px">
-      <div class="section-title">ALL-TIME RANKING</div>
-      <div class="section-sub">BY CARDS</div>
-    </div>
+    <div class="section-hdr"><div class="section-title">MY FRIENDS</div><div class="section-sub" id="friendsCount"></div></div>
+    <div id="friendsManageContainer" style="width:100%;margin-bottom:14px"></div>
 
-    <div class="lb-list" id="lbAllTime" style="width:100%;margin-bottom:20px"></div>
-
-    <div style="width:100%;background:var(--panel);border:1.5px solid var(--border);border-radius:8px;padding:16px;text-align:center;margin-bottom:20px;">
-      <div style="font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:3px;color:var(--gold);margin-bottom:8px;">CHALLENGE FRIENDS</div>
-      <div style="font-size:13px;color:var(--gold-dim);margin-bottom:14px;letter-spacing:1px;">Share your profile link and challenge friends!</div>
-      <button onclick="shareProfile()" style="background:var(--gold);color:var(--dark);border:none;font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:3px;padding:10px 28px;cursor:pointer;border-radius:4px;box-shadow:3px 3px 0 rgba(0,0,0,.3);">COPY PROFILE LINK</button>
+    <div class="share-profile-box">
+      <p>Share your username with friends so they can add you and see your scores on their leaderboard!</p>
+      <button class="share-profile-btn" onclick="copyUsername()">COPY MY USERNAME</button>
     </div>
 
   </div>
 
-</div><!-- /page -->
+  <div class="footer" style="width:100%">
+    <span>FILMY SPACE</span>
+    <span>Next puzzle in <span class="countdown" id="footerCountdown">--:--:--</span></span>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
 <script>
-const CARDS_KEY = 'tollywood_collection';
-const PULLS_KEY = 'tollywood_pulls';
-const TRADES_KEY = 'tollywood_trades';
-const GAME_KEY  = 'cinemaa_history';
-const STREAK_KEY= 'cinemaa_streak';
+// ── Redirect if no username ──────────────────────────────────────
+const username = getUsername();
+if (!username) {
+  window.location.href = 'setup.html?next=profile.html';
+}
 
-// ── Load data from localStorage (same keys as existing games) ──────
-function load(key){ try{return JSON.parse(localStorage.getItem(key));}catch(e){return null;} }
-
-const collection  = load(CARDS_KEY) || {};
-const pullCount   = load(PULLS_KEY) || 0;
-const tradeCount  = load(TRADES_KEY) || 0;
-const gameHistory = load(GAME_KEY)  || [];
-const gameStreak  = load(STREAK_KEY)|| 0;
-
-// ── Inline cards data (mirrors cards.json) ─────────────────────────
+// ── Card data ────────────────────────────────────────────────────
 const CARDS = [
-  {id:1,pic:"🔥",name:"Chiranjeevi",role:"Rising Star",rarity:"common",bg:"#5a1010",levelOf:"chiranjeevi",level:1,levelsTo:2},
-  {id:2,pic:"🔥",name:"Chiranjeevi",role:"Action King",rarity:"common",bg:"#7b1a1a",levelOf:"chiranjeevi",level:2,levelsFrom:1,levelsTo:3},
-  {id:3,pic:"🔥",name:"Chiranjeevi",role:"Megastar",rarity:"legendary",bg:"#9b0000",levelOf:"chiranjeevi",level:3,levelsFrom:2},
-  {id:4,pic:"🦅",name:"Jr NTR",role:"Student No.1",rarity:"common",bg:"#10205a",levelOf:"jrntr",level:1,levelsTo:5},
-  {id:5,pic:"🦅",name:"Jr NTR",role:"Young Tiger",rarity:"legendary",bg:"#1a3a7b",levelOf:"jrntr",level:2,levelsFrom:4},
-  {id:6,pic:"🐯",name:"Allu Arjun",role:"Stylish Star",rarity:"common",bg:"#2a1050",levelOf:"alluarjun",level:1,levelsTo:7},
-  {id:7,pic:"🐯",name:"Allu Arjun",role:"Icon Star",rarity:"legendary",bg:"#4a1a7b",levelOf:"alluarjun",level:2,levelsFrom:6},
-  {id:8,pic:"💎",name:"Mahesh Babu",role:"Prince Charming",rarity:"common",bg:"#103040",levelOf:"mahesh",level:1,levelsTo:9},
-  {id:9,pic:"💎",name:"Mahesh Babu",role:"Prince",rarity:"legendary",bg:"#1a5a7b",levelOf:"mahesh",level:2,levelsFrom:8},
-  {id:10,pic:"🌙",name:"Pawan Kalyan",role:"Fresh Face",rarity:"common",bg:"#103020",levelOf:"pawan",level:1,levelsTo:11},
-  {id:11,pic:"🌙",name:"Pawan Kalyan",role:"Power Star",rarity:"legendary",bg:"#1a7b4a",levelOf:"pawan",level:2,levelsFrom:10},
-  {id:12,pic:"🎪",name:"Ram Charan",role:"Mega Son",rarity:"common",bg:"#402010",levelOf:"ramcharan",level:1,levelsTo:13},
-  {id:13,pic:"🎪",name:"Ram Charan",role:"Mega Power Star",rarity:"legendary",bg:"#7b4a1a",levelOf:"ramcharan",level:2,levelsFrom:12},
-  {id:14,pic:"🏆",name:"Rajamouli",role:"Budding Director",rarity:"common",bg:"#301030",levelOf:"rajamouli",level:1,levelsTo:15},
-  {id:15,pic:"🏆",name:"Rajamouli",role:"Director King",rarity:"legendary",bg:"#5a1a5a",levelOf:"rajamouli",level:2,levelsFrom:14},
-  {id:16,pic:"🌪️",name:"Pushpa",role:"The Rise",rarity:"common",bg:"#3a1a00",levelOf:"pushpa",level:1,levelsTo:17},
-  {id:17,pic:"🌪️",name:"Pushpa",role:"The Rule",rarity:"legendary",bg:"#6b2a0a",levelOf:"pushpa",level:2,levelsFrom:16},
+  {id:1,pic:"🔥",name:"Chiranjeevi",role:"Rising Star",rarity:"common",bg:"#5a1010",level:1},
+  {id:2,pic:"🔥",name:"Chiranjeevi",role:"Action King",rarity:"common",bg:"#7b1a1a",level:2},
+  {id:3,pic:"🔥",name:"Chiranjeevi",role:"Megastar",rarity:"legendary",bg:"#9b0000",level:3},
+  {id:4,pic:"🦅",name:"Jr NTR",role:"Student No.1",rarity:"common",bg:"#10205a",level:1},
+  {id:5,pic:"🦅",name:"Jr NTR",role:"Young Tiger",rarity:"legendary",bg:"#1a3a7b",level:2},
+  {id:6,pic:"🐯",name:"Allu Arjun",role:"Stylish Star",rarity:"common",bg:"#2a1050",level:1},
+  {id:7,pic:"🐯",name:"Allu Arjun",role:"Icon Star",rarity:"legendary",bg:"#4a1a7b",level:2},
+  {id:8,pic:"💎",name:"Mahesh Babu",role:"Prince Charming",rarity:"common",bg:"#103040",level:1},
+  {id:9,pic:"💎",name:"Mahesh Babu",role:"Prince",rarity:"legendary",bg:"#1a5a7b",level:2},
+  {id:10,pic:"🌙",name:"Pawan Kalyan",role:"Fresh Face",rarity:"common",bg:"#103020",level:1},
+  {id:11,pic:"🌙",name:"Pawan Kalyan",role:"Power Star",rarity:"legendary",bg:"#1a7b4a",level:2},
+  {id:12,pic:"🎪",name:"Ram Charan",role:"Mega Son",rarity:"common",bg:"#402010",level:1},
+  {id:13,pic:"🎪",name:"Ram Charan",role:"Mega Power Star",rarity:"legendary",bg:"#7b4a1a",level:2},
+  {id:14,pic:"🏆",name:"Rajamouli",role:"Budding Director",rarity:"common",bg:"#301030",level:1},
+  {id:15,pic:"🏆",name:"Rajamouli",role:"Director King",rarity:"legendary",bg:"#5a1a5a",level:2},
+  {id:16,pic:"🌪️",name:"Pushpa",role:"The Rise",rarity:"common",bg:"#3a1a00",level:1},
+  {id:17,pic:"🌪️",name:"Pushpa",role:"The Rule",rarity:"legendary",bg:"#6b2a0a",level:2},
   {id:18,pic:"⚡",name:"Balakrishna",role:"NBK",rarity:"common",bg:"#2a3a2a"},
   {id:19,pic:"🌊",name:"Venkatesh",role:"Victory",rarity:"common",bg:"#1a2a4a"},
   {id:20,pic:"🎯",name:"Nagarjuna",role:"King",rarity:"common",bg:"#2a2a1a"},
@@ -561,286 +370,314 @@ const CARDS = [
   {id:34,pic:"🌙",name:"Adivi Sesh",role:"Major Star",rarity:"common",bg:"#2a3a3a"},
 ];
 
-// ── Filmstrip ──────────────────────────────────────────────────────
-function buildFilmstrip(){
-  const emojis = CARDS.map(c=>c.pic);
-  const html = Array.from({length:2}, ()=>
-    emojis.map(e=>`<div class="fhole"><span></span><span></span></div><div class="fhole-content">${e}</div>`).join('')
-  );
-  ['fs1','fs2'].forEach((id,i) => document.getElementById(id).innerHTML = html[i]);
-}
+// ── Load localStorage data ────────────────────────────────────────
+function load(k){try{return JSON.parse(localStorage.getItem(k));}catch(e){return null;}}
+const collection  = load('tollywood_collection') || {};
+const pullCount   = load('tollywood_pulls') || 0;
+const gameHistory = load('cinemaa_history') || [];
+const gameStreak  = load('cinemaa_streak') || 0;
 
-// ── Derive owned set ───────────────────────────────────────────────
-const ownedIds = new Set(Object.entries(collection).filter(([,v])=>v>0).map(([k])=>parseInt(k)));
-const ownedCards = CARDS.filter(c => ownedIds.has(c.id));
-const legendaryOwned = ownedCards.filter(c => c.rarity === 'legendary');
+const ownedIds    = new Set(Object.entries(collection).filter(([,v])=>v>0).map(([k])=>parseInt(k)));
+const ownedCards  = CARDS.filter(c=>ownedIds.has(c.id));
+const legendaryOwned = ownedCards.filter(c=>c.rarity==='legendary');
 
-// ── Populate stats bar ─────────────────────────────────────────────
+// ── Populate profile ──────────────────────────────────────────────
+document.getElementById('usernameEl').textContent = username ? username.toUpperCase() : '—';
+document.getElementById('handleEl').textContent = '@' + (username||'') + ' · Filmy Space';
+
 document.getElementById('st-cards').textContent     = ownedIds.size;
 document.getElementById('st-legendary').textContent = legendaryOwned.length;
 document.getElementById('st-streak').textContent    = gameStreak;
 document.getElementById('st-puzzles').textContent   = gameHistory.length;
 document.getElementById('st-pulls').textContent     = pullCount;
 
-// Update badges dynamically
-function updateBadges(){
-  const badges = [];
-  if(legendaryOwned.length > 0)
-    badges.push(`<span class="badge badge-legendary">⭐ ${legendaryOwned.length} LEGENDARY</span>`);
-  if(gameStreak >= 3)
-    badges.push(`<span class="badge badge-streak">🔥 ${gameStreak} DAY STREAK</span>`);
-  if(ownedIds.size >= CARDS.length * 0.5)
-    badges.push(`<span class="badge badge-top">🏆 HALF COLLECTION</span>`);
-  if(gameHistory.length >= 7)
-    badges.push(`<span class="badge badge-verified">✓ VERIFIED PLAYER</span>`);
-  if(badges.length)
-    document.getElementById('badgesEl').innerHTML = badges.join('');
-}
-updateBadges();
+// Avatar based on best card
+const topCard = legendaryOwned[0] || ownedCards[0];
+if(topCard) document.getElementById('avatarEl').textContent = topCard.pic;
 
-// ── Game stats ─────────────────────────────────────────────────────
+// Badges
+const badges = [];
+if(legendaryOwned.length>0) badges.push(`<span class="badge badge-legendary">⭐ ${legendaryOwned.length} LEGENDARY</span>`);
+if(gameStreak>=3) badges.push(`<span class="badge badge-streak">🔥 ${gameStreak} STREAK</span>`);
+if(gameHistory.length>=7) badges.push(`<span class="badge badge-verified">✓ ACTIVE PLAYER</span>`);
+document.getElementById('badgesEl').innerHTML = badges.join('');
+
+// ── Format helpers ────────────────────────────────────────────────
 function formatTime(ms){
   if(!ms) return '—';
-  const s=Math.floor(ms/1000), m=Math.floor(s/60), sec=s%60, t=Math.floor((ms%1000)/100);
+  const s=Math.floor(ms/1000),m=Math.floor(s/60),sec=s%60,t=Math.floor((ms%1000)/100);
   return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}.${t}`;
 }
 
-const wins       = gameHistory.filter(r=>r.correct);
-const winPct     = gameHistory.length ? Math.round(wins.length/gameHistory.length*100) : 0;
-const times      = wins.filter(r=>r.timeMs).map(r=>r.timeMs);
-const bestTime   = times.length ? Math.min(...times) : null;
-const avgTime    = times.length ? Math.round(times.reduce((a,b)=>a+b,0)/times.length) : null;
+// ── Game stats ────────────────────────────────────────────────────
+const wins    = gameHistory.filter(r=>r.correct);
+const winPct  = gameHistory.length?Math.round(wins.length/gameHistory.length*100):0;
+const times   = wins.filter(r=>r.timeMs).map(r=>r.timeMs);
+const best    = times.length?Math.min(...times):null;
+const avg     = times.length?Math.round(times.reduce((a,b)=>a+b,0)/times.length):null;
 
-// Overview game stats
-['gp-played','gg-played'].forEach(id => document.getElementById(id).textContent = gameHistory.length);
-['gp-winrate','gg-winrate'].forEach(id => document.getElementById(id).textContent = winPct+'%');
-['gp-streak','gg-streak'].forEach(id => document.getElementById(id).textContent = gameStreak + (gameStreak>0?' 🔥':''));
-['gp-best','gg-best'].forEach(id => document.getElementById(id).textContent = formatTime(bestTime));
-['gp-avg','gg-avg'].forEach(id => document.getElementById(id).textContent = formatTime(avgTime));
-
-const maxStreak = (() => {
-  let max=0, cur=0;
-  [...gameHistory].sort((a,b)=>a.date-b.date).forEach(r=>{cur=r.correct?cur+1:0;max=Math.max(max,cur);});
-  return max;
-})();
-document.getElementById('gg-maxstreak').textContent = maxStreak;
+['gp-played','gg-played'].forEach(id=>document.getElementById(id).textContent=gameHistory.length);
+['gp-winrate','gg-winrate'].forEach(id=>document.getElementById(id).textContent=winPct+'%');
+['gp-streak','gg-streak'].forEach(id=>document.getElementById(id).textContent=gameStreak+(gameStreak>0?' 🔥':''));
+['gp-best','gg-best'].forEach(id=>document.getElementById(id).textContent=formatTime(best));
 document.getElementById('gg-correct').textContent = wins.length;
-
-function buildHistoryDots(containerId){
-  const el = document.getElementById(containerId);
-  const recent = gameHistory.slice(-14);
-  const dots = recent.map(r => `<div class="streak-dot ${r.correct?'win':'loss'}"></div>`).join('');
-  const empty = Array.from({length: Math.max(0,14-recent.length)}, ()=>'<div class="streak-dot empty"></div>').join('');
-  el.innerHTML = empty + dots;
-}
-buildHistoryDots('gp-history');
-buildHistoryDots('gg-history');
-
-// Cards game stats
+document.getElementById('gg-avg').textContent     = formatTime(avg);
 document.getElementById('gc-pulls').textContent     = pullCount;
 document.getElementById('gc-collected').textContent = ownedIds.size;
 document.getElementById('gc-legendary').textContent = legendaryOwned.length;
-document.getElementById('gc-trades').textContent    = tradeCount;
-document.getElementById('gc-pct').textContent       = CARDS.length ? Math.round(ownedIds.size/CARDS.length*100)+'%' : '0%';
+document.getElementById('gc-pct').textContent = CARDS.length?Math.round(ownedIds.size/CARDS.length*100)+'%':'0%';
 
-// ── Card renderer ──────────────────────────────────────────────────
-function renderCard(card, showUnowned=true){
-  const owned = ownedIds.has(card.id);
-  const dup   = (collection[card.id]||0) > 1 ? collection[card.id] : 0;
-  const isLegendary = card.rarity === 'legendary';
-  const lvClass = card.level===3?'lv3':card.level===2?'lv2':card.level?'lv1':'';
-  if(!owned && !showUnowned) return '';
-  return `
-    <div class="card ${owned?'owned':''} ${isLegendary&&owned?'legendary-shimmer':''}"
-         style="background:${card.bg||'#1a1a1a'}"
-         title="${card.name} — ${card.role}">
-      <div class="card-top">
-        <div class="card-emoji">${card.pic}</div>
-        <div class="card-name">${card.name}</div>
-        <div class="card-role">${card.role}</div>
-      </div>
-      <div class="card-rarity">${card.rarity.toUpperCase()}</div>
-      ${dup?`<div class="card-dup">×${dup}</div>`:''}
-      ${card.level&&lvClass?`<div class="card-lv ${lvClass}">LV${card.level}</div>`:''}
-    </div>`;
+function buildDots(id){
+  const el=document.getElementById(id);
+  const recent=gameHistory.slice(-14);
+  const empty=Array.from({length:Math.max(0,14-recent.length)},()=>'<div class="streak-dot empty"></div>').join('');
+  const dots=recent.map(r=>`<div class="streak-dot ${r.correct?'win':'loss'}"></div>`).join('');
+  el.innerHTML=empty+dots;
+}
+buildDots('gp-history'); buildDots('gg-history');
+
+// ── Card renderer ─────────────────────────────────────────────────
+function renderCard(card,showUnowned=true){
+  const owned=ownedIds.has(card.id);
+  const dup=(collection[card.id]||0)>1?collection[card.id]:0;
+  const isLeg=card.rarity==='legendary';
+  const lvClass=card.level===3?'lv3':card.level===2?'lv2':card.level?'lv1':'';
+  if(!owned&&!showUnowned) return '';
+  return `<div class="card ${owned?'owned':''} ${isLeg&&owned?'legendary-shimmer':''}" style="background:${card.bg||'#1a1a1a'}" title="${card.name}">
+    <div class="card-top"><div class="card-emoji">${card.pic}</div><div class="card-name">${card.name}</div><div class="card-role">${card.role}</div></div>
+    <div class="card-rarity">${card.rarity.toUpperCase()}</div>
+    ${dup?`<div class="card-dup">×${dup}</div>`:''}
+    ${card.level&&lvClass?`<div class="card-lv ${lvClass}">LV${card.level}</div>`:''}
+  </div>`;
 }
 
-// ── Collection tab ─────────────────────────────────────────────────
-let currentFilter = 'all';
-function setFilter(f, btn){
-  currentFilter = f;
+// ── Collection ────────────────────────────────────────────────────
+let currentFilter='all';
+function setFilter(f,btn){
+  currentFilter=f;
   document.querySelectorAll('.cf').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderCollection();
 }
-
 function renderCollection(){
-  let cards = CARDS;
-  if(currentFilter==='owned')     cards = CARDS.filter(c=>ownedIds.has(c.id));
-  if(currentFilter==='legendary') cards = CARDS.filter(c=>c.rarity==='legendary');
-  if(currentFilter==='common')    cards = CARDS.filter(c=>c.rarity==='common');
-  if(currentFilter==='levels')    cards = CARDS.filter(c=>c.level);
-
-  document.getElementById('collGrid').innerHTML = cards.map(c=>renderCard(c,true)).join('');
-  document.getElementById('collCountLabel').textContent = `${ownedIds.size} / ${CARDS.length}`;
-  const pct = CARDS.length ? Math.round(ownedIds.size/CARDS.length*100) : 0;
-  document.getElementById('collProgressBar').style.width = pct+'%';
+  let cards=CARDS;
+  if(currentFilter==='owned') cards=CARDS.filter(c=>ownedIds.has(c.id));
+  if(currentFilter==='legendary') cards=CARDS.filter(c=>c.rarity==='legendary');
+  if(currentFilter==='common') cards=CARDS.filter(c=>c.rarity==='common');
+  document.getElementById('collGrid').innerHTML=cards.map(c=>renderCard(c,true)).join('');
+  document.getElementById('collCountLabel').textContent=`${ownedIds.size} / ${CARDS.length}`;
+  document.getElementById('collProgressBar').style.width=Math.round(ownedIds.size/CARDS.length*100)+'%';
 }
 renderCollection();
 
-// ── Showcase (top 6 owned, legendary first) ────────────────────────
-function renderShowcase(){
-  const showcase = [...ownedCards]
-    .sort((a,b)=>(b.rarity==='legendary'?1:0)-(a.rarity==='legendary'?1:0))
-    .slice(0,6);
-  const el = document.getElementById('showcaseGrid');
-  if(!showcase.length){
-    el.innerHTML = `<div class="empty-state" style="grid-column:1/-1">Pull some cards to build your showcase!</div>`;
-    return;
-  }
-  el.innerHTML = showcase.map(c=>renderCard(c,false)).join('');
+// ── Showcase ──────────────────────────────────────────────────────
+const showcase=[...ownedCards].sort((a,b)=>(b.rarity==='legendary'?1:0)-(a.rarity==='legendary'?1:0)).slice(0,6);
+const sg=document.getElementById('showcaseGrid');
+if(!showcase.length){
+  sg.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:24px;font-size:13px;color:var(--gold-dim)">Pull cards to build your showcase!</div>';
+}else{
+  sg.innerHTML=showcase.map(c=>renderCard(c,false)).join('');
 }
-renderShowcase();
 
-// ── Activity feed ──────────────────────────────────────────────────
-function buildActivity(){
-  const feed = [];
+// ── Activity ──────────────────────────────────────────────────────
+const feed=[];
+gameHistory.slice(-4).reverse().forEach(r=>{
+  const TODAY=Math.floor(Date.now()/86400000);
+  const diff=TODAY-r.date;
+  const when=diff===0?'TODAY':diff===1?'YESTERDAY':diff+'D AGO';
+  feed.push({type:'puzzle',icon:'🎬',
+    main:r.correct?`Solved puzzle <span>#${(r.puzzleIdx||0)+1}</span> in ${formatTime(r.timeMs)}`:`Attempted puzzle <span>#${(r.puzzleIdx||0)+1}</span>`,
+    time:when});
+});
+legendaryOwned.slice(0,2).forEach(c=>{
+  feed.push({type:'pull',icon:c.pic,main:`Pulled <span>${c.name}</span> — ${c.role}`,time:'RECENTLY'});
+});
+const af=document.getElementById('activityFeed');
+document.getElementById('activityCount').textContent=feed.length+' EVENTS';
+if(!feed.length){
+  af.innerHTML='<div style="text-align:center;padding:24px;font-size:13px;color:var(--gold-dim)">No activity yet — start playing!</div>';
+}else{
+  af.innerHTML=feed.map(a=>`<div class="activity-item"><div class="activity-icon ${a.type}">${a.icon}</div><div class="activity-text"><div class="activity-main">${a.main}</div><div class="activity-time">${a.time}</div></div></div>`).join('');
+}
 
-  // Puzzle results
-  gameHistory.slice(-5).reverse().forEach(r=>{
-    feed.push({
-      type:'puzzle',
-      icon:'🎬',
-      main: r.correct
-        ? `Solved <span>సినిమా క్రమం #${(r.puzzleIdx||0)+1}</span> in ${formatTime(r.timeMs)}`
-        : `Attempted <span>సినిమా క్రమం #${(r.puzzleIdx||0)+1}</span> — not today!`,
-      time: timeAgo(r.date),
+// ── Friends leaderboard (Supabase) ────────────────────────────────
+const TODAY_IDX = Math.floor(Date.now()/86400000);
+const PUZZLE_IDX = TODAY_IDX % 30; // matches game
+
+async function loadFriendsTab() {
+  const lbContainer = document.getElementById('lbContainer');
+  const manageContainer = document.getElementById('friendsManageContainer');
+  const friendsCount = document.getElementById('friendsCount');
+
+  lbContainer.innerHTML = `<div style="text-align:center;padding:20px;font-size:13px;color:var(--gold-dim)"><span class="spinner"></span>LOADING...</div>`;
+
+  if (!username) return;
+
+  // Get friends list
+  const friendsList = await getFriendsList(username);
+  friendsCount.textContent = friendsList.length + ' FRIENDS';
+
+  // My today's result
+  const myResult = gameHistory.find(r => r.date === TODAY_IDX);
+
+  // Build leaderboard
+  if (!friendsList.length) {
+    lbContainer.innerHTML = `
+      <div class="empty-friends">
+        <div class="empty-friends-icon">👥</div>
+        <div class="empty-friends-title">NO FRIENDS YET</div>
+        <div class="empty-friends-sub">Add friends by their username above to see how they did on today's puzzle.</div>
+      </div>`;
+  } else {
+    // Get friends' scores for today
+    const friendsScores = await getFriendsScores(username, PUZZLE_IDX);
+    const scoresMap = {};
+    friendsScores.forEach(s => scoresMap[s.username] = s);
+
+    // Build rows: me + friends
+    const rows = [];
+
+    // Add me
+    rows.push({
+      name: username,
+      isYou: true,
+      correct: myResult?.correct ?? null,
+      timeMs: myResult?.timeMs ?? null,
     });
-  });
 
-  // Legendary cards
-  legendaryOwned.slice(0,3).forEach(c=>{
-    feed.push({
-      type:'pull',
-      icon:c.pic,
-      main:`Pulled <span>${c.name}</span> — ${c.role}`,
-      time:'recently',
-      cardBg: c.bg,
-      cardPic: c.pic,
+    // Add friends
+    friendsList.forEach(f => {
+      const score = scoresMap[f];
+      rows.push({
+        name: f,
+        isYou: false,
+        correct: score?.correct ?? null,
+        timeMs: score?.time_ms ?? null,
+      });
     });
-  });
 
-  // Trades
-  if(tradeCount>0){
-    feed.push({type:'trade',icon:'🔄',main:`Made <span>${tradeCount} trade${tradeCount>1?'s':''}</span> in Tollywood Cards`,time:'recently'});
+    // Sort: correct first, then by time
+    rows.sort((a,b) => {
+      if(a.correct && !b.correct) return -1;
+      if(!a.correct && b.correct) return 1;
+      if(a.correct && b.correct) return (a.timeMs||99999)-(b.timeMs||99999);
+      if(a.correct===null) return 1;
+      return 0;
+    });
+
+    const rankCount = rows.filter(r=>r.correct!==null).length;
+    lbContainer.innerHTML = `<div class="lb-list">${rows.map((p,i) => {
+      const rank = p.correct !== null ? i+1 : '—';
+      const timeClass = p.isYou ? 'you-t' : (i===0 && p.correct ? 'best' : '');
+      const resultClass = p.correct===null?'p':p.correct?'c':'w';
+      const resultIcon = p.correct===null?'—':p.correct?'✓':'✗';
+      const timeStr = p.timeMs ? formatTime(p.timeMs) : p.correct===null ? 'WAITING' : '—';
+      const initial = (p.name||'?')[0].toUpperCase();
+      return `<div class="lb-row ${p.isYou?'you':''}">
+        <div class="lb-rank ${rank<=3?'top':''}">${rank}</div>
+        <div class="lb-av">${initial}</div>
+        <div class="lb-name ${p.isYou?'you-name':''}">${p.isYou?p.name+' (you)':p.name}</div>
+        <div class="lb-result ${resultClass}">${resultIcon}</div>
+        <div class="lb-time ${timeClass}">${timeStr}</div>
+      </div>`;
+    }).join('')}</div>`;
   }
 
-  if(!feed.length){
-    document.getElementById('activityFeed').innerHTML=`<div class="empty-state">No activity yet — start playing!</div>`;
-    document.getElementById('activityCount').textContent='0 EVENTS';
-    return;
+  // Friends manage list
+  if(!friendsList.length){
+    manageContainer.innerHTML = `<div style="text-align:center;padding:16px;font-size:13px;color:var(--gold-dim)">No friends added yet.</div>`;
+  } else {
+    manageContainer.innerHTML = `<div class="friends-manage">${friendsList.map(f=>`
+      <div class="friend-item">
+        <div class="lb-av" style="width:30px;height:30px;font-size:13px">${f[0].toUpperCase()}</div>
+        <div class="friend-item-name">${f}</div>
+        <button class="remove-btn" onclick="handleRemoveFriend('${f}')">REMOVE</button>
+      </div>`).join('')}</div>`;
   }
-
-  feed.sort(()=>Math.random()-.5).slice(0,6);
-
-  document.getElementById('activityCount').textContent = feed.length+' EVENTS';
-  document.getElementById('activityFeed').innerHTML = feed.map(a=>`
-    <div class="activity-item">
-      <div class="activity-icon ${a.type}" style="${a.cardBg?'background:'+a.cardBg+'44;border-color:'+a.cardBg:''}">
-        ${a.icon}
-      </div>
-      <div class="activity-text">
-        <div class="activity-main">${a.main}</div>
-        <div class="activity-time">${a.time.toUpperCase()}</div>
-      </div>
-    </div>`).join('');
 }
 
-function timeAgo(dayIdx){
-  const diff = Math.floor(Date.now()/86400000) - dayIdx;
-  if(diff===0) return 'today';
-  if(diff===1) return 'yesterday';
-  return diff+' days ago';
+// ── Add friend ────────────────────────────────────────────────────
+async function handleAddFriend() {
+  const input = document.getElementById('friendInput');
+  const msg = document.getElementById('friendMsg');
+  const btn = document.getElementById('addFriendBtn');
+  const friendName = input.value.trim();
+
+  if (!friendName) return;
+  btn.disabled = true;
+  msg.textContent = '';
+  msg.className = 'friend-msg';
+
+  const result = await addFriend(username, friendName);
+
+  if(result.error) {
+    msg.textContent = result.error === 'Player not found'
+      ? `"${friendName}" doesn't have a Filmy Space account yet`
+      : result.error;
+    msg.className = 'friend-msg err';
+  } else {
+    msg.textContent = `${friendName} added!`;
+    msg.className = 'friend-msg ok';
+    input.value = '';
+    loadFriendsTab();
+  }
+  btn.disabled = false;
 }
-buildActivity();
 
-// ── Leaderboard (demo + you) ───────────────────────────────────────
-const TODAY = Math.floor(Date.now()/86400000);
-const todayResult = gameHistory.find(r=>r.date===TODAY);
+document.getElementById('friendInput').addEventListener('keydown', e => {
+  if(e.key==='Enter') handleAddFriend();
+});
 
-const demoPlayers = [
-  {name:'Ravi Kumar',av:'🎬',correct:true,timeMs:8300,cards:22},
-  {name:'Sravya R',av:'🌟',correct:true,timeMs:14700,cards:18},
-  {name:'Anil M',av:'🎭',correct:false,timeMs:31200,cards:15},
-  {name:'Kavitha P',av:'🌸',correct:null,timeMs:null,cards:12},
-  {name:'Suresh T',av:'🏆',correct:true,timeMs:19400,cards:9},
-];
-
-function buildLeaderboard(){
-  const you = {
-    name:'You',av:'🎯',
-    correct:todayResult?.correct??null,
-    timeMs:todayResult?.timeMs??null,
-    cards:ownedIds.size,
-    isYou:true
-  };
-  const all = [...demoPlayers,you].sort((a,b)=>{
-    if(a.correct&&!b.correct) return -1;
-    if(!a.correct&&b.correct) return 1;
-    if(a.correct&&b.correct) return (a.timeMs||99999)-(b.timeMs||99999);
-    if(a.correct===null) return 1;
-    return 0;
-  });
-
-  document.getElementById('lbList').innerHTML = all.map((p,i)=>`
-    <div class="lb-row ${p.isYou?'you':''}">
-      <div class="lb-rank ${i<3?'top':''}">${p.correct!==null?i+1:'—'}</div>
-      <div class="lb-av">${p.av}</div>
-      <div class="lb-name ${p.isYou?'you-name':''}">${p.name}</div>
-      <div class="lb-cards">${p.correct===null?'—':p.correct?'✓':'✗'}</div>
-      <div class="lb-score">${p.timeMs?formatTime(p.timeMs):p.correct===null?'WAITING':'—'}</div>
-    </div>`).join('');
-
-  // All-time by cards
-  const allTime = [...demoPlayers,you].sort((a,b)=>b.cards-a.cards);
-  document.getElementById('lbAllTime').innerHTML = allTime.map((p,i)=>`
-    <div class="lb-row ${p.isYou?'you':''}">
-      <div class="lb-rank ${i<3?'top':''}">${i+1}</div>
-      <div class="lb-av">${p.av}</div>
-      <div class="lb-name ${p.isYou?'you-name':''}">${p.name}</div>
-      <div class="lb-cards">${p.cards} cards</div>
-      <div class="lb-score">${p.cards}</div>
-    </div>`).join('');
+// ── Remove friend ─────────────────────────────────────────────────
+async function handleRemoveFriend(friendName) {
+  await removeFriend(username, friendName);
+  showToast('REMOVED');
+  loadFriendsTab();
 }
-buildLeaderboard();
 
-// ── Tab switching ──────────────────────────────────────────────────
-function switchTab(id, btn){
+// ── Tab switching ─────────────────────────────────────────────────
+function switchTab(id, btn) {
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('pane-'+id).classList.add('active');
+  if(id==='friends') loadFriendsTab();
 }
 
-// ── Share ──────────────────────────────────────────────────────────
-function shareProfile(){
-  const url = window.location.href;
-  const cards = ownedIds.size;
-  const text = `Check out my Tollywood Cards profile!\n🃏 ${cards} cards collected\n🎬 ${gameStreak} day streak\n${url}`;
-  if(navigator.share){ navigator.share({title:'My Tollywood Profile',text}); }
-  else if(navigator.clipboard){ navigator.clipboard.writeText(url).then(()=>showToast('LINK COPIED!')); }
+// ── Share ─────────────────────────────────────────────────────────
+function shareProfile() {
+  const text = `Check out my Filmy Space profile!\n🃏 ${ownedIds.size} cards · 🔥 ${gameStreak} streak\nUsername: ${username}`;
+  if(navigator.share){ navigator.share({title:'Filmy Space',text}); }
+  else if(navigator.clipboard){ navigator.clipboard.writeText(text).then(()=>showToast('COPIED!')); }
 }
 
-// ── Toast ──────────────────────────────────────────────────────────
-function showToast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2200);
+function copyUsername() {
+  if(navigator.clipboard){ navigator.clipboard.writeText(username).then(()=>showToast('USERNAME COPIED!')); }
 }
 
-// ── Init ───────────────────────────────────────────────────────────
-buildFilmstrip();
+// ── Toast ─────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ── Countdown ─────────────────────────────────────────────────────
+function tick() {
+  const now=new Date(), tom=new Date(now); tom.setHours(24,0,0,0);
+  const d=tom-now,h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);
+  document.getElementById('footerCountdown').textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+tick(); setInterval(tick,1000);
+
+// ── Filmstrip ─────────────────────────────────────────────────────
+const emojis=CARDS.map(c=>c.pic);
+const fsHtml=Array.from({length:2},()=>emojis.map(e=>`<div class="fhole"><span></span><span></span></div><div class="fhole-content">${e}</div>`).join(''));
+document.getElementById('fs1').innerHTML=fsHtml[0];
+document.getElementById('fs2').innerHTML=fsHtml[1];
+
+// ── Ensure player registered in Supabase ─────────────────────────
+if(username) ensurePlayer(username);
 </script>
 </body>
 </html>

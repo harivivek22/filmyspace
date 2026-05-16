@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Welcome to Filmy Space</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--gold:#FFE600;--gold2:#D4960A;--dark:#1a0a00;--panel:#1e1208;--red:#cc1111;--border:rgba(212,150,10,.28);}
+body{font-family:'Barlow Condensed',sans-serif;background:var(--dark);min-height:100vh;color:var(--gold);display:flex;align-items:center;justify-content:center;}
+.strip{position:fixed;top:0;bottom:0;width:10px;background:repeating-linear-gradient(0deg,#cc0000 0,#cc0000 20px,#8b0000 20px,#8b0000 40px);z-index:100;}
+.strip-l{left:0;}.strip-r{right:0;}
+.box{
+  background:var(--panel);border:2px solid var(--border);
+  border-radius:12px;padding:40px 32px;text-align:center;
+  max-width:420px;width:calc(100% - 60px);
+  position:relative;
+}
+.box::before{content:'';position:absolute;inset:0;border-radius:12px;background:repeating-linear-gradient(135deg,transparent,transparent 20px,rgba(255,200,80,.02) 20px,rgba(255,200,80,.02) 21px);pointer-events:none;}
+.logo{font-family:'Bebas Neue',cursive;font-size:36px;color:var(--gold);letter-spacing:4px;margin-bottom:4px;}
+.logo-sub{font-size:11px;letter-spacing:3px;color:rgba(255,200,80,.5);text-transform:uppercase;margin-bottom:32px;}
+.welcome{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:2px;color:var(--gold);margin-bottom:8px;}
+.sub{font-size:14px;color:rgba(255,200,80,.6);margin-bottom:28px;line-height:1.6;letter-spacing:.5px;}
+.input-wrap{position:relative;margin-bottom:8px;}
+.input-wrap::before{
+  content:'@';position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  font-size:16px;color:rgba(255,200,80,.5);font-weight:700;
+}
+input{
+  width:100%;padding:13px 14px 13px 32px;
+  background:rgba(0,0,0,.4);border:1.5px solid var(--border);
+  border-radius:8px;color:var(--gold);font-size:18px;
+  font-family:'Bebas Neue',cursive;letter-spacing:2px;
+  outline:none;transition:border-color .2s;
+}
+input:focus{border-color:rgba(212,150,10,.7);}
+input::placeholder{color:rgba(255,200,80,.25);letter-spacing:2px;}
+.hint{font-size:11px;color:rgba(255,200,80,.35);letter-spacing:1px;margin-bottom:24px;}
+.btn{
+  width:100%;padding:14px;background:var(--gold);color:var(--dark);
+  border:none;border-radius:8px;font-family:'Bebas Neue',cursive;
+  font-size:22px;letter-spacing:3px;cursor:pointer;
+  box-shadow:4px 4px 0 rgba(0,0,0,.3);transition:opacity .2s,transform .1s;
+}
+.btn:hover{opacity:.88;transform:translateY(-1px);}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+.error{font-size:12px;color:#ff8888;letter-spacing:1px;margin-bottom:12px;min-height:18px;}
+.loading{font-size:13px;color:rgba(255,200,80,.5);letter-spacing:2px;margin-top:12px;display:none;}
+</style>
+</head>
+<body>
+<div class="strip strip-l"></div>
+<div class="strip strip-r"></div>
+
+<div class="box">
+  <div class="logo">FILMY SPACE</div>
+  <div class="logo-sub">Telugu Cinema Games</div>
+  <div class="welcome">PICK YOUR USERNAME</div>
+  <div class="sub">This is how friends will find you and challenge you on the leaderboard.</div>
+  <div class="input-wrap">
+    <input type="text" id="usernameInput" placeholder="YOURNAME" maxlength="20" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+  </div>
+  <div class="hint">3–20 characters · letters, numbers, underscores only</div>
+  <div class="error" id="errorMsg"></div>
+  <button class="btn" id="saveBtn" onclick="saveUsername()">LET'S GO →</button>
+  <div class="loading" id="loading">SAVING...</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script>
+const input = document.getElementById('usernameInput');
+const errorMsg = document.getElementById('errorMsg');
+const saveBtn = document.getElementById('saveBtn');
+const loading = document.getElementById('loading');
+
+// If already has username, redirect
+if (getUsername()) {
+  const dest = new URLSearchParams(window.location.search).get('next') || 'home.html';
+  window.location.href = dest;
+}
+
+input.addEventListener('input', () => {
+  errorMsg.textContent = '';
+  const val = input.value;
+  saveBtn.disabled = val.length < 3;
+});
+
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter') saveUsername();
+});
+
+async function saveUsername() {
+  const raw = input.value.trim();
+  if (raw.length < 3) { errorMsg.textContent = 'At least 3 characters please'; return; }
+  if (!/^[a-zA-Z0-9_]+$/.test(raw)) { errorMsg.textContent = 'Only letters, numbers and underscores'; return; }
+
+  saveBtn.disabled = true;
+  loading.style.display = 'block';
+  errorMsg.textContent = '';
+
+  // Check if username taken
+  const { data } = await db.from('players').select('username').eq('username', raw).maybeSingle();
+  if (data) {
+    errorMsg.textContent = 'Username already taken — try another';
+    saveBtn.disabled = false;
+    loading.style.display = 'none';
+    return;
+  }
+
+  // Save to Supabase + localStorage
+  await ensurePlayer(raw);
+  setUsername(raw);
+
+  const dest = new URLSearchParams(window.location.search).get('next') || 'home.html';
+  window.location.href = dest;
+}
+</script>
+</body>
+</html>
