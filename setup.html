@@ -77,7 +77,7 @@ const loading = document.getElementById('loading');
 
 // If already has username, redirect
 if (getUsername()) {
-  const dest = new URLSearchParams(window.location.search).get('next') || 'home.html';
+  const dest = new URLSearchParams(window.location.search).get('next') || 'index.html';
   window.location.href = dest;
 }
 
@@ -113,7 +113,7 @@ async function saveUsername() {
   await ensurePlayer(raw);
   setUsername(raw);
 
-  const dest = new URLSearchParams(window.location.search).get('next') || 'home.html';
+  const dest = new URLSearchParams(window.location.search).get('next') || 'index.html';
   window.location.href = dest;
 }
 </script>
